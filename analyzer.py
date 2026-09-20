@@ -7,9 +7,18 @@ import re
 from datetime import datetime
 from PIL import Image
 
-# Initialize OpenCV Face Detector
-HAAR_PATH = os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
-FACE_CASCADE = cv2.CascadeClassifier(HAAR_PATH)
+# Initialize OpenCV Face Detector safely
+FACE_CASCADE = None
+try:
+    if hasattr(cv2, "data") and hasattr(cv2.data, "haarcascades"):
+        HAAR_PATH = os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
+    else:
+        HAAR_PATH = "haarcascade_frontalface_default.xml"
+    if hasattr(cv2, "CascadeClassifier"):
+        FACE_CASCADE = cv2.CascadeClassifier(HAAR_PATH)
+except Exception as e:
+    print(f"Face detector initialization warning: {e}")
+    FACE_CASCADE = None
 
 # =====================================================================
 # SIMULATED BORDER CHECKPOINT WATCHLIST & BLACKLIST DATABASE
@@ -48,13 +57,19 @@ def detect_faces(cv_image):
     gray_eq = cv2.equalizeHist(gray)
     
     # 1. Primary: OpenCV Haar Cascade
-    faces = FACE_CASCADE.detectMultiScale(
-        gray_eq,
-        scaleFactor=1.1,
-        minNeighbors=3,
-        minSize=(35, 35),
-        flags=cv2.CASCADE_SCALE_IMAGE
-    )
+    faces = ()
+    if FACE_CASCADE is not None and hasattr(FACE_CASCADE, "detectMultiScale"):
+        try:
+            scale_flag = getattr(cv2, "CASCADE_SCALE_IMAGE", 0)
+            faces = FACE_CASCADE.detectMultiScale(
+                gray_eq,
+                scaleFactor=1.1,
+                minNeighbors=3,
+                minSize=(35, 35),
+                flags=scale_flag
+            )
+        except Exception as e:
+            faces = ()
     
     face_list = []
     for (x, y, w, h) in faces:
