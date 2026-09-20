@@ -5,7 +5,6 @@ from flask import Flask, render_template, request, jsonify, session, send_from_d
 from werkzeug.utils import secure_filename
 import database
 import analyzer
-import tunnel_manager
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = os.environ.get("SECRET_KEY", "id-shield-secret-" + secrets.token_hex(16))
@@ -375,21 +374,32 @@ def serve_upload(filename):
 
 @app.route("/api/network-info", methods=["GET"])
 def get_network_info():
-    info = tunnel_manager.get_network_info()
-    return jsonify({"success": True, "network": info})
+    # Detect single permanent cloud URL or local host
+    app_url = os.environ.get("APP_URL")
+    if not app_url:
+        app_url = request.host_url.rstrip("/")
+
+    is_cloud = "onrender.com" in app_url or bool(os.environ.get("RENDER")) or bool(os.environ.get("PORT"))
+
+    return jsonify({
+        "success": True,
+        "network": {
+            "is_cloud": is_cloud,
+            "permanent_url": app_url,
+            "database_type": "Cloud PostgreSQL" if database.IS_POSTGRES else "Persistent SQLite",
+            "status": "online"
+        }
+    })
 
 if __name__ == "__main__":
-    net_info = tunnel_manager.update_network_state(port=5050)
+    port = int(os.environ.get("PORT", 5050))
     print("=" * 70)
-    print("  ID SHIELD - MULTI-NETWORK & ANY-DEVICE ACCESS")
-    print(f"  * Local Machine       : http://127.0.0.1:5050")
-    print(f"  * Wi-Fi / LAN Network : {net_info['lan_url']} (Phones, iPads, Laptops on same Wi-Fi)")
-    print(f"  * Starting Global Public Tunnel (Any Device / 4G / 5G / Remote)...")
+    print("  ID SHIELD - 24/7 CLOUD-READY PERSISTENCE SERVER")
+    print(f"  * Listening Port      : {port}")
+    print(f"  * Database Engine     : {'Cloud PostgreSQL' if database.IS_POSTGRES else 'SQLite (id_shield.db)'}")
+    print(f"  * Deployment Mode     : {'Production Cloud' if os.environ.get('PORT') else 'Local Workstation'}")
     print("=" * 70)
-
-    # Start public global tunnel in background
-    tunnel_manager.start_tunnel_background(port=5050)
 
     # Bind to 0.0.0.0 so all network interfaces can connect
-    app.run(host="0.0.0.0", port=5050, debug=False, threaded=True)
+    app.run(host="0.0.0.0", port=port, debug=False, threaded=True)
 
