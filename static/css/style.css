@@ -1,62 +1,125 @@
-/* ID Shield Custom Cyber & Glassmorphism Styling */
+/* ID SHIELD - Enterprise Border Control & Verification System Styling
+   Design System: High-density, utilitarian, institutional, zero startup slop.
+   No neon glows, no harsh gradients, no liquid glass, no soft bubbly corners.
+*/
 
-@keyframes pulseGlow {
-    0%, 100% {
-        box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
-    }
-    50% {
-        box-shadow: 0 0 30px rgba(6, 182, 212, 0.45);
-    }
+:root {
+    --bg-primary: #0b0f17;
+    --bg-secondary: #111827;
+    --bg-surface: #182234;
+    --border-color: #26334d;
+    --border-subtle: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent-blue: #2563eb;
+    --status-clear: #15803d;
+    --status-secondary: #b45309;
+    --status-detain: #b91c1c;
+    --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    --mono-stack: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-.glow-cyan {
-    animation: pulseGlow 3s infinite ease-in-out;
+body {
+    font-family: var(--font-stack);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Scrollbar */
+/* Scrollbar - Clean & Functional */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #090d16;
+    background: #0b0f17;
 }
 ::-webkit-scrollbar-thumb {
-    background: #1e293b;
-    border-radius: 3px;
+    background: #334155;
+    border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #0ea5e9;
+    background: #475569;
 }
 
-/* Glassmorphism Card Utilities */
-.glass-card {
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+/* Institutional Panels & Containers */
+.panel {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.panel-header {
+    background-color: #0d1524;
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+/* High-Density Data Tables */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.data-table th {
+    background-color: #0e1726;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-color);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+}
+
+.data-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+}
+
+.data-table tr:hover {
+    background-color: #141e30;
 }
 
 /* Drag and Drop Active State */
 .drag-active {
-    border-color: #06b6d4 !important;
-    background-color: rgba(6, 182, 212, 0.08) !important;
+    border-color: #3b82f6 !important;
+    background-color: #1e2d4a !important;
 }
 
-/* Risk Badge Styling Classes */
-.risk-low-banner {
-    background: linear-gradient(135deg, rgba(6, 78, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
-    border-color: rgba(16, 185, 129, 0.4);
+/* Institutional Triage Status Banners */
+.triage-clear {
+    background-color: #064e3b;
+    border: 1px solid #059669;
     color: #ecfdf5;
 }
 
-.risk-review-banner {
-    background: linear-gradient(135deg, rgba(120, 53, 15, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
-    border-color: rgba(245, 158, 11, 0.4);
+.triage-secondary {
+    background-color: #78350f;
+    border: 1px solid #d97706;
     color: #fffbeb;
 }
 
-.risk-high-banner {
-    background: linear-gradient(135deg, rgba(136, 19, 55, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
-    border-color: rgba(244, 63, 94, 0.4);
-    color: #fff1f2;
+.triage-detain {
+    background-color: #7f1d1d;
+    border: 1px solid #dc2626;
+    color: #fef2f2;
+}
+
+/* Fixed Monospace Data Fields */
+.code-text {
+    font-family: var(--mono-stack);
+    font-size: 12px;
 }
