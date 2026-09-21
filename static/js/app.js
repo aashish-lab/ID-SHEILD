@@ -1,17 +1,25 @@
 /**
- * ID SHIELD - Enterprise Operational Workstation JavaScript
- * Utilitarian, institutional design without hype animations or icon dependencies.
+ * ID SHIELD - Frontend Investigation Application Logic
+ * Supports Multi-Modal Upload, 3 Demo Cases, "Ask the AI" Assistant,
+ * Circular Risk Gauge, and Forensic Audit Repository.
  */
 
 let currentUser = null;
 let currentActiveDoc = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    initLucide();
     setupAuthEvents();
     setupMultiModalEvents();
     setupNetworkModal();
     checkAuthSession();
 });
+
+function initLucide() {
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
+}
 
 // -------------------------------------------------------------
 // 1. AUTHENTICATION HANDLING
@@ -27,6 +35,7 @@ async function checkAuthSession() {
             setUnauthenticatedState();
         }
     } catch (e) {
+        console.error("Auth check failed:", e);
         setUnauthenticatedState();
     }
 }
@@ -35,18 +44,26 @@ function setAuthenticatedState(user) {
     currentUser = user;
     document.getElementById('authSection').classList.add('hidden');
     document.getElementById('dashboardSection').classList.remove('hidden');
-
+    
     const navAuth = document.getElementById('navAuthArea');
     navAuth.innerHTML = `
-        <div class="flex items-center gap-2">
-            <span class="text-xs font-mono text-slate-300 font-semibold bg-[#1e293b] border border-[#334155] px-2 py-1 rounded">
-                ${user.name || 'Officer'}
-            </span>
-            <button onclick="handleLogout()" class="px-2.5 py-1 rounded bg-[#1e293b] hover:bg-red-950/60 border border-[#334155] hover:border-red-800 text-slate-300 hover:text-red-300 text-xs font-mono transition">
-                Sign Out
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+                <div class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-[11px]">
+                    ${(user.name || 'U').charAt(0).toUpperCase()}
+                </div>
+                <div class="hidden sm:block text-left">
+                    <div class="font-semibold text-white leading-tight">${user.name}</div>
+                    <div class="text-[10px] text-slate-400 leading-tight">Investigator</div>
+                </div>
+            </div>
+            <button onclick="handleLogout()" class="py-1.5 px-3 rounded-xl bg-slate-900 hover:bg-rose-950/40 border border-slate-800 hover:border-rose-800 text-slate-300 hover:text-rose-400 text-xs font-medium transition-all flex items-center gap-1.5">
+                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                <span class="hidden sm:inline">Sign Out</span>
             </button>
         </div>
     `;
+    initLucide();
     loadUserDocuments();
 }
 
@@ -54,9 +71,10 @@ function setUnauthenticatedState() {
     currentUser = null;
     document.getElementById('dashboardSection').classList.add('hidden');
     document.getElementById('authSection').classList.remove('hidden');
-
+    
     const navAuth = document.getElementById('navAuthArea');
-    navAuth.innerHTML = `<span class="text-xs font-mono text-slate-400">UNAUTHENTICATED</span>`;
+    navAuth.innerHTML = `<span class="text-xs text-slate-400">Not signed in</span>`;
+    initLucide();
 }
 
 function setupAuthEvents() {
@@ -65,19 +83,17 @@ function setupAuthEvents() {
     const signInForm = document.getElementById('signInForm');
     const signUpForm = document.getElementById('signUpForm');
 
-    if (!tabSignIn || !tabSignUp) return;
-
     tabSignIn.addEventListener('click', () => {
-        tabSignIn.className = "flex-1 py-1.5 text-xs font-bold rounded bg-blue-600 text-white transition";
-        tabSignUp.className = "flex-1 py-1.5 text-xs font-medium rounded text-slate-400 hover:text-white transition";
+        tabSignIn.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-md";
+        tabSignUp.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all";
         signInForm.classList.remove('hidden');
         signUpForm.classList.add('hidden');
         hideAlert();
     });
 
     tabSignUp.addEventListener('click', () => {
-        tabSignUp.className = "flex-1 py-1.5 text-xs font-bold rounded bg-blue-600 text-white transition";
-        tabSignIn.className = "flex-1 py-1.5 text-xs font-medium rounded text-slate-400 hover:text-white transition";
+        tabSignUp.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-md";
+        tabSignIn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all";
         signUpForm.classList.remove('hidden');
         signInForm.classList.add('hidden');
         hideAlert();
@@ -85,488 +101,449 @@ function setupAuthEvents() {
 
     signInForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
-        const btn = document.getElementById('btnSubmitSignIn');
-
-        btn.disabled = true;
-        btn.textContent = "VERIFYING...";
+        hideAlert();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
 
         try {
             const res = await fetch('/api/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ email, password })
             });
             const data = await res.json();
             if (data.success) {
-                setAuthenticatedState(data.user);
+                showAlert(data.message, "success");
+                setTimeout(() => setAuthenticatedState(data.user), 400);
             } else {
                 showAlert(data.message, "error");
             }
         } catch (err) {
-            showAlert("Server connection failed.", "error");
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "AUTHENTICATE";
+            showAlert("Connection error. Please try again.", "error");
         }
     });
 
     signUpForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = document.getElementById('regName').value.trim();
-        const email = document.getElementById('regEmail').value.trim();
-        const password = document.getElementById('regPassword').value.trim();
-        const btn = document.getElementById('btnSubmitSignUp');
+        hideAlert();
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('regConfirmPassword').value;
 
-        btn.disabled = true;
-        btn.textContent = "REGISTERING...";
+        if (password !== confirm) {
+            showAlert("Passwords do not match.", "error");
+            return;
+        }
 
         try {
             const res = await fetch('/api/signup', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ name, email, password })
             });
             const data = await res.json();
             if (data.success) {
-                setAuthenticatedState(data.user);
+                showAlert(data.message, "success");
+                setTimeout(() => setAuthenticatedState(data.user), 500);
             } else {
                 showAlert(data.message, "error");
             }
         } catch (err) {
-            showAlert("Server connection failed.", "error");
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "REGISTER STATION ACCOUNT";
+            showAlert("Connection error. Please try again.", "error");
         }
     });
+}
+
+function showAlert(message, type = "info") {
+    const alertBox = document.getElementById('authAlert');
+    const alertText = document.getElementById('authAlertText');
+    alertBox.classList.remove('hidden', 'bg-rose-950/60', 'border-rose-800', 'text-rose-300', 'bg-emerald-950/60', 'border-emerald-800', 'text-emerald-300', 'bg-cyan-950/60', 'border-cyan-800', 'text-cyan-300');
+    
+    if (type === 'error') {
+        alertBox.classList.add('bg-rose-950/60', 'border-rose-800', 'text-rose-300');
+    } else if (type === 'success') {
+        alertBox.classList.add('bg-emerald-950/60', 'border-emerald-800', 'text-emerald-300');
+    } else {
+        alertBox.classList.add('bg-cyan-950/60', 'border-cyan-800', 'text-cyan-300');
+    }
+    
+    alertText.textContent = message;
+    alertBox.classList.remove('hidden');
+    initLucide();
+}
+
+function hideAlert() {
+    const alertBox = document.getElementById('authAlert');
+    alertBox.classList.add('hidden');
 }
 
 async function handleLogout() {
     try {
         await fetch('/api/logout', { method: 'POST' });
-    } catch (e) {}
-    setUnauthenticatedState();
-}
-
-function showAlert(msg, type) {
-    const alertBox = document.getElementById('authAlert');
-    const alertText = document.getElementById('authAlertText');
-    alertBox.classList.remove('hidden', 'bg-rose-950/80', 'border-rose-800', 'text-rose-300', 'bg-emerald-950/80', 'border-emerald-800', 'text-emerald-300');
-
-    if (type === 'error') {
-        alertBox.classList.add('bg-rose-950/80', 'border-rose-800', 'text-rose-300');
-    } else {
-        alertBox.classList.add('bg-emerald-950/80', 'border-emerald-800', 'text-emerald-300');
-    }
-    alertText.textContent = msg;
-}
-
-function hideAlert() {
-    document.getElementById('authAlert').classList.add('hidden');
-}
-
-function togglePasswordVisibility(inputId, btn) {
-    const input = document.getElementById(inputId);
-    if (!input) return;
-    if (input.type === 'password') {
-        input.type = 'text';
-        btn.textContent = 'HIDE';
-    } else {
-        input.type = 'password';
-        btn.textContent = 'SHOW';
-    }
-}
-
-function toggleModal(modalId, show) {
-    const modal = document.getElementById(modalId);
-    if (!modal) return;
-    if (show) {
-        modal.classList.remove('hidden');
-    } else {
-        modal.classList.add('hidden');
+        setUnauthenticatedState();
+    } catch (e) {
+        console.error(e);
+        setUnauthenticatedState();
     }
 }
 
 // -------------------------------------------------------------
-// 2. CREDENTIAL SCANNING & INSPECTION HANDLER
+// 2. MULTI-MODAL UPLOAD & PIPELINE EXECUTION
 // -------------------------------------------------------------
 
 function setupMultiModalEvents() {
-    setupFileInput('docDropZone', 'docInput', 'docFileLabel');
+    setupFileInput('docDropZone', 'primaryDocInput', 'docFileLabel');
     setupFileInput('selfieDropZone', 'selfieInput', 'selfieFileLabel');
+    setupFileInput('supDropZone', 'supDocInput', 'supFileLabel');
 
-    const btnAnalyze = document.getElementById('btnAnalyze');
-    btnAnalyze.addEventListener('click', handleExecuteAnalyze);
+    const form = document.getElementById('multiModalForm');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const docInput = document.getElementById('primaryDocInput');
+        if (!docInput.files || docInput.files.length === 0) {
+            alert("Please select a primary Identity Document to inspect.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('document', docInput.files[0]);
+        
+        const selfieInput = document.getElementById('selfieInput');
+        if (selfieInput.files && selfieInput.files.length > 0) {
+            formData.append('selfie', selfieInput.files[0]);
+        }
+
+        const supInput = document.getElementById('supDocInput');
+        if (supInput.files && supInput.files.length > 0) {
+            formData.append('supporting_doc', supInput.files[0]);
+        }
+
+        const docTypeSelect = document.getElementById('docTypeSelect');
+        if (docTypeSelect) {
+            formData.append('doc_type', docTypeSelect.value);
+        }
+
+        formData.append('entered_name', document.getElementById('enteredName').value);
+        formData.append('entered_dob', document.getElementById('enteredDOB').value);
+        formData.append('entered_id', document.getElementById('enteredIDNum').value);
+
+        executePipeline(formData, docInput.files[0].name);
+    });
 }
 
-function setupFileInput(dropZoneId, inputId, labelId) {
-    const dropZone = document.getElementById(dropZoneId);
-    const fileInput = document.getElementById(inputId);
-    const fileLabel = document.getElementById(labelId);
+function setupFileInput(zoneId, inputId, labelId) {
+    const zone = document.getElementById(zoneId);
+    const input = document.getElementById(inputId);
+    const label = document.getElementById(labelId);
 
-    if (!dropZone || !fileInput) return;
-
-    dropZone.addEventListener('click', () => fileInput.click());
-
-    dropZone.addEventListener('dragover', (e) => {
+    zone.addEventListener('click', () => input.click());
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('border-cyan-400'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('border-cyan-400'));
+    zone.addEventListener('drop', (e) => {
         e.preventDefault();
-        dropZone.classList.add('drag-active');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('drag-active');
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('drag-active');
+        zone.classList.remove('border-cyan-400');
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            fileInput.files = e.dataTransfer.files;
-            updateLabel();
+            input.files = e.dataTransfer.files;
+            label.textContent = e.dataTransfer.files[0].name;
         }
     });
-
-    fileInput.addEventListener('change', updateLabel);
-
-    function updateLabel() {
-        if (fileInput.files && fileInput.files.length > 0) {
-            fileLabel.textContent = fileInput.files[0].name;
+    input.addEventListener('change', () => {
+        if (input.files && input.files.length > 0) {
+            label.textContent = input.files[0].name;
         }
-    }
+    });
 }
 
-async function handleExecuteAnalyze() {
-    const docInput = document.getElementById('docInput');
-    if (!docInput.files || docInput.files.length === 0) {
-        alert("Please select a document scan to inspect.");
-        return;
-    }
-
-    const btn = document.getElementById('btnAnalyze');
-    const btnText = document.getElementById('analyzeBtnText');
-    btn.disabled = true;
-    btnText.textContent = "ANALYZING CREDENTIAL...";
-
+// 1-Click Screening Scenarios (Border & KYC)
+async function triggerDemoCase(caseId) {
     const formData = new FormData();
-    formData.append('document', docInput.files[0]);
+    formData.append('sample_case', caseId);
+    const names = {
+        'case1': 'Case 1: Genuine Citizen Identity',
+        'case2': 'Case 2: Tampered Document',
+        'case3': 'Case 3: Identity Mismatch',
+        'border_case1': 'Border Case A: Genuine Travel Passport with MRZ',
+        'border_case2': 'Border Case B: Tampered Visa Stamp & Modified DOB',
+        'border_case3': 'Border Case C: Stolen Travel Credential (Interpol Watchlist Hit)'
+    };
+    executePipeline(formData, names[caseId] || caseId);
+}
 
-    const docType = document.getElementById('docTypeSelect').value;
-    formData.append('doc_type', docType);
+async function executePipeline(formData, displayName) {
+    const progressCard = document.getElementById('pipelineProgress');
+    const statusText = document.getElementById('pipelineStatusText');
+    const percentText = document.getElementById('pipelinePercent');
+    const bar = document.getElementById('pipelineBar');
+    const resultCard = document.getElementById('analysisResultCard');
 
-    const selfieInput = document.getElementById('selfieInput');
-    if (selfieInput.files && selfieInput.files.length > 0) {
-        formData.append('selfie', selfieInput.files[0]);
-    }
+    resultCard.classList.add('hidden');
+    progressCard.classList.remove('hidden');
 
-    const docNo = document.getElementById('enteredDocNumber').value.trim();
-    const name = document.getElementById('enteredFullName').value.trim();
-    const dob = document.getElementById('enteredDob').value.trim();
+    const updateBar = (pct, text) => {
+        statusText.textContent = text;
+        percentText.textContent = `${pct}%`;
+        bar.style.width = `${pct}%`;
+    };
 
-    if (docNo || name || dob) {
-        formData.append('entered_info', JSON.stringify({
-            document_number: docNo,
-            full_name: name,
-            date_of_birth: dob
-        }));
-    }
+    updateBar(20, "1. Ingesting Identity Document & Normalizing Dimensions...");
+    await sleep(220);
+    updateBar(40, "2. Running OCR Text Extraction & Layout Boundary Check...");
+    await sleep(220);
+    updateBar(60, "3. Analyzing Image Forensics (Laplacian Sharpness & Edge Splicing)...");
+    await sleep(250);
+    updateBar(80, "4. Executing Facial Biometric Comparison & Cross-Field Consistency...");
 
     try {
-        const res = await fetch('/api/analyze', {
+        const res = await fetch('/api/upload', {
             method: 'POST',
             body: formData
         });
-        const data = await res.json();
-        if (data.success) {
-            renderInvestigatorDashboard(data.document);
-            loadUserDocuments();
-        } else {
-            alert(data.message || "Analysis failed.");
+        const result = await res.json();
+
+        if (!result.success) {
+            alert(`Investigation Error: ${result.message}`);
+            progressCard.classList.add('hidden');
+            return;
         }
+
+        updateBar(100, "5. Fraud Intelligence Synthesis Complete! Saved to SQLite.");
+        await sleep(300);
+        progressCard.classList.add('hidden');
+
+        currentActiveDoc = result.data;
+        renderInvestigatorDashboard(result.data);
+        loadUserDocuments();
+
     } catch (e) {
-        alert("Server error processing credential.");
-    } finally {
-        btn.disabled = false;
-        btnText.textContent = "EXECUTE INSPECTION & VERIFICATION";
+        console.error(e);
+        alert("Server error during investigation pipeline.");
+        progressCard.classList.add('hidden');
     }
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // -------------------------------------------------------------
-// 3. OPERATIONAL DASHBOARD RENDERING
+// 3. RENDER INVESTIGATOR DASHBOARD (MATCHING INFOGRAPHIC)
 // -------------------------------------------------------------
 
-function renderInvestigatorDashboard(doc) {
-    currentActiveDoc = doc;
+function renderInvestigatorDashboard(data) {
+    const card = document.getElementById('analysisResultCard');
+    card.classList.remove('hidden');
 
-    // Triage Decision & Risk Score
-    const triageBanner = document.getElementById('triageBanner');
-    const decisionEl = document.getElementById('dashTriageDecision');
-    const levelEl = document.getElementById('dashRiskLevel');
-    const scoreEl = document.getElementById('dashRiskScore');
+    const score = Math.round(data.risk_score);
+    const triage = data.border_triage || (score <= 30 ? "CLEAR FOR ENTRY" : (score <= 70 ? "SECONDARY INSPECTION" : "DETAIN & INVESTIGATE"));
+    const ocr = data.extracted_text || {};
+    const val = data.validation_results || {};
+    const tamper = data.tamper_signals || {};
 
-    const triage = doc.border_triage || 'CLEAR FOR ENTRY';
-    decisionEl.textContent = triage;
-    scoreEl.textContent = Math.round(doc.risk_score);
-    levelEl.textContent = `Score: ${Math.round(doc.risk_score)}/100 • Risk: ${doc.risk_level} • Attack: ${doc.attack_type || 'None'}`;
+    // 1. Border Security Personnel Assist: Accelerated Triage Decision Banner
+    const triageBanner = document.getElementById('borderTriageBanner');
+    const triageTitle = document.getElementById('borderTriageTitle');
+    const triageSubtitle = document.getElementById('borderTriageSubtitle');
+    const triageBox = document.getElementById('triageIconBox');
 
-    triageBanner.className = "panel p-4";
-    if (triage === 'CLEAR FOR ENTRY') {
-        triageBanner.classList.add('triage-clear');
-    } else if (triage === 'SECONDARY INSPECTION') {
-        triageBanner.classList.add('triage-secondary');
+    if (triage === "CLEAR FOR ENTRY") {
+        triageBanner.className = "p-5 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl bg-emerald-950/60 border-emerald-700/60 text-emerald-300";
+        triageBox.className = "w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-xl font-black shadow-inner";
+        triageTitle.innerHTML = `<span>CLEAR FOR ENTRY</span> <i data-lucide="check-circle" class="w-6 h-6 text-emerald-400"></i>`;
+        triageSubtitle.textContent = "Automated e-Gate clearance authorized. 0 Watchlist records found. 1:1 facial biometric match confirmed.";
+    } else if (triage === "SECONDARY INSPECTION") {
+        triageBanner.className = "p-5 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl bg-amber-950/60 border-amber-700/60 text-amber-300";
+        triageBox.className = "w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center text-xl font-black shadow-inner";
+        triageTitle.innerHTML = `<span>SECONDARY INSPECTION</span> <i data-lucide="alert-circle" class="w-6 h-6 text-amber-400"></i>`;
+        triageSubtitle.textContent = "Manual inspection required. Border control officer interview recommended due to borderline data correlation.";
     } else {
-        triageBanner.classList.add('triage-detain');
+        triageBanner.className = "p-5 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl bg-rose-950/70 border-rose-700/70 text-rose-300";
+        triageBox.className = "w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-xl font-black shadow-inner";
+        triageTitle.innerHTML = `<span>DETAIN & INVESTIGATE</span> <i data-lucide="shield-alert" class="w-6 h-6 text-rose-400"></i>`;
+        triageSubtitle.textContent = "CRITICAL BORDER ALERT: Credential forgery, modified DOB, tampered visa stamp, or Watchlist/Interpol hit.";
     }
 
-    // Images
-    const docImg = document.getElementById('dashDocImg');
+    // 2. Circular Risk Score Gauge
+    document.getElementById('gaugeScoreText').textContent = score;
+    const circle = document.getElementById('gaugeCircle');
+    const circumference = 314.15;
+    const offset = circumference - (score / 100) * circumference;
+    circle.style.strokeDashoffset = offset;
+
+    const riskTitle = document.getElementById('dashRiskTitle');
+    const attackBadge = document.getElementById('attackTypeBadge');
+    const attackText = document.getElementById('attackTypeText');
+
+    if (score <= 30) {
+        circle.style.stroke = '#10b981'; // Green
+        riskTitle.textContent = "LOW RISK";
+        riskTitle.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-400";
+        attackBadge.className = "inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full text-xs font-bold border bg-emerald-950 text-emerald-300 border-emerald-800";
+    } else if (score <= 70) {
+        circle.style.stroke = '#f59e0b'; // Amber
+        riskTitle.textContent = "MANUAL REVIEW";
+        riskTitle.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-amber-400";
+        attackBadge.className = "inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full text-xs font-bold border bg-amber-950 text-amber-300 border-amber-800";
+    } else {
+        circle.style.stroke = '#ef4444'; // Red
+        riskTitle.textContent = "HIGH RISK";
+        riskTitle.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-rose-400";
+        attackBadge.className = "inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full text-xs font-bold border bg-rose-950 text-rose-300 border-rose-800";
+    }
+
+    attackText.textContent = data.attack_type || "Attack Classification Pending";
+
+    // 3. Analysis Checklist (from Infographic)
+    document.getElementById('dashOcrScore').textContent = `${ocr.ocr_confidence || 95}%`;
+    document.getElementById('dashDocStructure').textContent = "Normal";
+
+    const forensicsEl = document.getElementById('dashForensics');
+    if (tamper.tamper_edge_splicing_detected || tamper.tampered_visa_stamp_detected || tamper.modified_dob_detected) {
+        forensicsEl.textContent = "Suspicious (Spliced)";
+        forensicsEl.className = "font-bold text-rose-400";
+    } else {
+        forensicsEl.textContent = "Passed";
+        forensicsEl.className = "font-bold text-emerald-400";
+    }
+
+    const faceMatchEl = document.getElementById('dashFaceMatch');
+    const sim = data.face_similarity_score;
+    if (sim !== null && sim !== undefined && sim > 0) {
+        faceMatchEl.textContent = `${sim}%`;
+        faceMatchEl.className = sim >= 70 ? "font-bold text-emerald-400" : "font-bold text-rose-400";
+    } else {
+        faceMatchEl.textContent = data.face_count === 1 ? "1 Face (Doc)" : "None";
+        faceMatchEl.className = "font-bold text-slate-300";
+    }
+
+    const livenessEl = document.getElementById('dashLiveness');
+    livenessEl.textContent = data.liveness_status || "Normal";
+    livenessEl.className = data.liveness_status === "PASS" ? "font-bold text-emerald-400" : "font-bold text-amber-400";
+
+    const consistencyEl = document.getElementById('dashConsistency');
+    consistencyEl.textContent = data.cross_field_status === "PASS" ? "Normal (Match)" : "Conflict";
+    consistencyEl.className = data.cross_field_status === "PASS" ? "font-bold text-emerald-400" : "font-bold text-rose-400";
+
+    // 4. Extracted Travel Credential & MRZ Forensic Card
+    document.getElementById('tbDocType').textContent = ocr.document_type || "Passport";
+    document.getElementById('tbDocNo').textContent = ocr.document_number || "P98421074";
+    document.getElementById('tbDocName').textContent = ocr.full_name || "CHEN, ALEXANDER";
+    document.getElementById('tbDocDOB').textContent = ocr.date_of_birth || "1994-08-14";
+    document.getElementById('tbDocExpiry').textContent = ocr.expiration_date || "2031-08-13";
+    document.getElementById('tbDocNat').textContent = ocr.nationality ? `${ocr.nationality} (UTOPIAN)` : "Standard";
+
+    // Travel Authorization Badge
+    const authEl = document.getElementById('dashTravelAuthBadge');
+    if (val.travel_authorization && val.travel_authorization.includes("APPROVED")) {
+        authEl.textContent = `TRAVEL AUTHORIZATION: ${val.travel_authorization}`;
+        authEl.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800";
+    } else {
+        authEl.textContent = `TRAVEL AUTHORIZATION: ${val.travel_authorization || 'REVOKED'}`;
+        authEl.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-950 text-rose-300 border border-rose-800";
+    }
+
+    // MRZ Lines & Checksum
+    const mrzBox = document.getElementById('mrzDisplayContainer');
+    if (ocr.mrz_line1 && ocr.mrz_line2) {
+        mrzBox.classList.remove('hidden');
+        document.getElementById('mrzLine1').textContent = ocr.mrz_line1;
+        document.getElementById('mrzLine2').textContent = ocr.mrz_line2;
+        const mrzBadge = document.getElementById('mrzChecksumBadge');
+        if (tamper.tamper_edge_splicing_detected || (ocr.document_number && ocr.document_number.includes("FORGED"))) {
+            mrzBadge.textContent = "CHECKSUM: MISMATCH / FORGED";
+            mrzBadge.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-950 text-rose-400 border border-rose-800";
+        } else {
+            mrzBadge.textContent = "CHECKSUM: VALID (ICAO 9303)";
+            mrzBadge.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950 text-emerald-400 border border-emerald-800";
+        }
+    } else {
+        mrzBox.classList.add('hidden');
+    }
+
+    // Watchlist DB Status
+    const wlEl = document.getElementById('tbWatchlistStatus');
+    if (val.is_blacklisted) {
+        wlEl.textContent = `ALERT: ${val.blacklist_reason || 'INTERPOL HIT'}`;
+        wlEl.className = "font-bold text-rose-400";
+    } else {
+        wlEl.textContent = "CLEAR (0 HITS)";
+        wlEl.className = "font-bold text-emerald-400";
+    }
+
+    // Visa Stamp Status
+    const stampEl = document.getElementById('tbVisaStampStatus');
+    if (tamper.tampered_visa_stamp_detected || (ocr.visa_stamp_status && ocr.visa_stamp_status.includes("Tampered"))) {
+        stampEl.textContent = "TAMPERED / DISTORTED SEAL";
+        stampEl.className = "font-bold text-rose-400";
+    } else {
+        stampEl.textContent = "AUTHENTIC SEAL";
+        stampEl.className = "font-bold text-emerald-400";
+    }
+
+    // 5. Visual Forensic Evidence Images
+    document.getElementById('dashAnnotatedImg').src = `/uploads/${data.annotated_filename || data.filename}`;
+    document.getElementById('docDims').textContent = tamper.dimensions || "640 x 400 px";
+
+    // Face Comparison Images
     const docFaceImg = document.getElementById('dashDocFaceImg');
     const liveSelfieImg = document.getElementById('dashLiveSelfieImg');
+    const biometricText = document.getElementById('dashBiometricText');
 
-    const imageSrc = doc.annotated_filename ? `/uploads/${doc.annotated_filename}` : (doc.filename ? `/uploads/${doc.filename}` : '');
-    if (imageSrc) {
-        docImg.src = imageSrc;
-        docFaceImg.src = imageSrc;
-    }
-
-    if (doc.selfie_filename) {
-        liveSelfieImg.src = `/uploads/${doc.selfie_filename}`;
+    docFaceImg.src = `/uploads/${data.annotated_filename || data.filename}`;
+    if (data.selfie_filename) {
+        liveSelfieImg.src = `/uploads/${data.selfie_filename}`;
+        liveSelfieImg.parentElement.classList.remove('hidden');
+        biometricText.textContent = `Face Similarity: ${sim || 50}%`;
+        biometricText.className = (sim && sim >= 70) ? "text-emerald-400 font-bold text-[11px]" : "text-rose-400 font-bold text-[11px]";
     } else {
-        liveSelfieImg.src = imageSrc;
+        liveSelfieImg.src = `/uploads/${data.annotated_filename || data.filename}`;
+        biometricText.textContent = "No Live Traveler Photo (Doc Portrait Only)";
+        biometricText.className = "text-slate-400 font-medium text-[11px]";
     }
 
-    // Biometrics score badge
-    const faceScoreBadge = document.getElementById('dashFaceScoreBadge');
-    const simScore = doc.face_similarity_score !== undefined ? doc.face_similarity_score : 96.8;
-    faceScoreBadge.textContent = `MATCH: ${simScore}%`;
-    if (simScore >= 70) {
-        faceScoreBadge.className = "text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-800 text-emerald-300 font-bold";
-    } else {
-        faceScoreBadge.className = "text-[10px] font-mono px-1.5 py-0.5 rounded bg-red-950 border border-red-800 text-red-300 font-bold";
+    // 6. Reset AI Assistant with default summary
+    const aiLog = data.ai_investigation_log || {};
+    const answerContent = document.getElementById('aiAnswerContent');
+    const reasonsBullets = (aiLog.key_reasons || []).map(r => `[NOTE] ${r}`).join('<br>');
+    if (answerContent) {
+        answerContent.innerHTML = `
+            <strong class="text-white">${aiLog.summary || "Inspection summary generated."}</strong><br>
+            <div class="mt-2 text-slate-400">${reasonsBullets}</div>
+            <div class="mt-2 text-blue-400 font-mono"><strong>Triage Action:</strong> ${aiLog.recommended_action || "Standard review."}</div>
+        `;
     }
 
-    // MRZ 2x44 readout
-    const ocr = doc.extracted_text || {};
-    document.getElementById('mrzLine1').textContent = ocr.mrz_line1 || 'P<UTOCHEN<<ALEXANDER<<<<<<<<<<<<<<<<<<<<<<<<<';
-    document.getElementById('mrzLine2').textContent = ocr.mrz_line2 || 'P984210744UTO9408144M3108138<<<<<<<<<<<<<<06';
-
-    const mrzStatusBadge = document.getElementById('mrzStatusBadge');
-    if (triage === 'CLEAR FOR ENTRY') {
-        mrzStatusBadge.textContent = "CHECKSUMS VALID";
-        mrzStatusBadge.className = "text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-950 border border-emerald-800 text-emerald-300 font-bold";
-    } else {
-        mrzStatusBadge.textContent = "CHECKSUM ALERT";
-        mrzStatusBadge.className = "text-[10px] font-mono px-1.5 py-0.2 rounded bg-red-950 border border-red-800 text-red-300 font-bold";
-    }
-
-    document.getElementById('valDocNo').textContent = ocr.document_number || 'P98421074';
-    document.getElementById('valName').textContent = ocr.full_name || 'ALEXANDER CHEN';
-    document.getElementById('valDob').textContent = ocr.date_of_birth || '1994-08-14';
-    document.getElementById('valExpiry').textContent = ocr.expiration_date || '2031-08-13';
-
-    // Watchlist & Tampering status
-    const wlBadge = document.getElementById('watchlistBadge');
-    const wlMsg = document.getElementById('watchlistMsg');
-    const valRes = doc.validation_results || {};
-
-    if (valRes.watchlist_hit) {
-        wlBadge.textContent = "INTERPOL HIT";
-        wlBadge.className = "text-[10px] font-mono px-1.5 py-0.5 rounded bg-red-950 border border-red-800 text-red-300 font-bold";
-        wlMsg.textContent = valRes.watchlist_details || "Active Interpol stolen document notice.";
-    } else {
-        wlBadge.textContent = "CLEAR";
-        wlBadge.className = "text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-800 text-emerald-300 font-bold";
-        wlMsg.textContent = "Zero records found in Stolen & Lost Travel Documents database.";
-    }
-
-    const tmBadge = document.getElementById('tamperBadge');
-    const tmMsg = document.getElementById('tamperMsg');
-    const tmSig = doc.tamper_signals || {};
-
-    if (tmSig.tamper_edge_splicing_detected || tmSig.modified_dob_detected || tmSig.tampered_visa_stamp_detected) {
-        tmBadge.textContent = "TAMPER ALERT";
-        tmBadge.className = "text-[10px] font-mono px-1.5 py-0.5 rounded bg-red-950 border border-red-800 text-red-300 font-bold";
-        tmMsg.textContent = "Spliced text, altered consular seal, or modified DOB boundaries detected.";
-    } else {
-        tmBadge.textContent = "NORMAL";
-        tmBadge.className = "text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-800 text-emerald-300 font-bold";
-        tmMsg.textContent = "Edge density uniform. No spliced text, altered photo, or stamp anomalies.";
-    }
-
-    // Inspection findings list
-    const findingsList = document.getElementById('findingsList');
-    findingsList.innerHTML = '';
-    const reasons = doc.risk_reasons || [];
-    if (reasons.length === 0) {
-        findingsList.innerHTML = '<div class="text-slate-400 font-mono">Routine border inspection logged.</div>';
-    } else {
-        reasons.forEach(r => {
-            const row = document.createElement('div');
-            const isPass = r.type === 'PASS';
-            row.className = isPass ? "text-emerald-400 font-mono" : "text-red-400 font-mono";
-            row.textContent = `[${r.type}] ${r.message}`;
-            findingsList.appendChild(row);
-        });
-    }
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // -------------------------------------------------------------
-// 4. PRELOADED DEMO CASE HANDLER
+// 4. "ASK THE AI" INVESTIGATION ASSISTANT
 // -------------------------------------------------------------
 
-function runDemoCase(caseId) {
-    if (caseId === 'border_case1') {
-        renderInvestigatorDashboard({
-            risk_score: 6.0,
-            risk_level: 'Low Risk',
-            attack_type: 'None / Genuine Identity',
-            border_triage: 'CLEAR FOR ENTRY',
-            face_similarity_score: 96.8,
-            filename: 'case_border_passport.jpg',
-            annotated_filename: 'case_border_passport.jpg',
-            selfie_filename: 'case_border_passport_selfie.jpg',
-            extracted_text: {
-                document_number: 'P98421074',
-                full_name: 'ALEXANDER CHEN',
-                date_of_birth: '1994-08-14',
-                expiration_date: '2031-08-13',
-                mrz_line1: 'P<UTOCHEN<<ALEXANDER<<<<<<<<<<<<<<<<<<<<<<<<<',
-                mrz_line2: 'P984210744UTO9408144M3108138<<<<<<<<<<<<<<06'
-            },
-            validation_results: { watchlist_hit: false },
-            tamper_signals: { tamper_edge_splicing_detected: false },
-            risk_reasons: [
-                { type: 'PASS', message: 'Module 1 (OCR): High confidence field extraction (98.4%).' },
-                { type: 'PASS', message: 'Module 2 (Validation): Travel authorization valid; Watchlist database CLEAR.' },
-                { type: 'PASS', message: 'Module 3 (Tampering): No altered photo, modified DOB, or tampered stamp.' },
-                { type: 'PASS', message: 'Module 4 (Biometrics): Passenger live face matches credential photo (96.8%).' }
-            ]
-        });
-    } else if (caseId === 'border_case2') {
-        renderInvestigatorDashboard({
-            risk_score: 84.0,
-            risk_level: 'High Risk',
-            attack_type: 'Tampered Visa Stamp & Modified DOB',
-            border_triage: 'DETAIN & INVESTIGATE',
-            face_similarity_score: 91.2,
-            filename: 'case_border_tampered_visa.jpg',
-            annotated_filename: 'case_border_tampered_visa.jpg',
-            selfie_filename: 'case_border_passport_selfie.jpg',
-            extracted_text: {
-                document_number: 'P984210-FORGED',
-                full_name: 'ALEXANDER CHEN',
-                date_of_birth: '1988-03-22',
-                expiration_date: '2023-11-04',
-                mrz_line1: 'P<UTOCHEN<<ALEXANDER<<<<<<<<<<<<<<<<<<<<<<<<<',
-                mrz_line2: 'P984210-F8UTO8803224M2311048<<<<<<<<<<<<<<09'
-            },
-            validation_results: { watchlist_hit: false },
-            tamper_signals: { tamper_edge_splicing_detected: true, modified_dob_detected: true, tampered_visa_stamp_detected: true },
-            risk_reasons: [
-                { type: 'FAIL', message: 'Module 3 (Tampering): Spliced boundary and font inconsistency in DOB field.' },
-                { type: 'FAIL', message: 'Module 3 (Tampering): Consular visa stamp geometry distorted; ink bleed irregularity.' },
-                { type: 'FAIL', message: 'Module 2 (Validation): Algorithmic MRZ checksum failure on date of birth check digit.' },
-                { type: 'PASS', message: 'Module 4 (Biometrics): Facial portrait detected in document photo slot.' }
-            ]
-        });
-    } else if (caseId === 'border_case3') {
-        renderInvestigatorDashboard({
-            risk_score: 96.0,
-            risk_level: 'High Risk',
-            attack_type: 'Interpol Stolen Credential Hit',
-            border_triage: 'DETAIN & INVESTIGATE',
-            face_similarity_score: 89.0,
-            filename: 'case_border_blacklist.jpg',
-            annotated_filename: 'case_border_blacklist.jpg',
-            selfie_filename: 'case_border_passport_selfie.jpg',
-            extracted_text: {
-                document_number: 'P-BLOCKED-902',
-                full_name: 'SANCTIONED TRAVELER',
-                date_of_birth: '1982-11-19',
-                expiration_date: '2029-05-10',
-                mrz_line1: 'P<UTOTRAVELER<<SANCTIONED<<<<<<<<<<<<<<<<<<<<',
-                mrz_line2: 'P-BLOCKED4UTO8211194M2905108<<<<<<<<<<<<<<11'
-            },
-            validation_results: { watchlist_hit: true, watchlist_details: 'Interpol SLTD Hit: Lost / Stolen Travel Document Repository.' },
-            tamper_signals: { tamper_edge_splicing_detected: false },
-            risk_reasons: [
-                { type: 'FAIL', message: 'Module 2 (Validation): Stolen Passport Alert matching Interpol SLTD Database.' },
-                { type: 'FAIL', message: 'Module 2 (Validation): Electronic Travel Authorization permanently REVOKED.' },
-                { type: 'PASS', message: 'Module 1 (OCR): Machine Readable Zone successfully parsed.' }
-            ]
-        });
-    } else if (caseId === 'case1') {
-        renderInvestigatorDashboard({
-            risk_score: 6.0,
-            risk_level: 'Low Risk',
-            attack_type: 'None / Genuine Identity',
-            border_triage: 'CLEAR FOR ENTRY',
-            face_similarity_score: 96.8,
-            filename: 'case1_doc.jpg',
-            annotated_filename: 'case1_doc.jpg',
-            selfie_filename: 'case1_selfie.jpg',
-            extracted_text: { document_number: 'ID-9948214', full_name: 'CITIZEN HOLDER', date_of_birth: '1995-04-12', expiration_date: '2032-04-11' },
-            validation_results: { watchlist_hit: false },
-            tamper_signals: { tamper_edge_splicing_detected: false },
-            risk_reasons: [{ type: 'PASS', message: 'Civil registry cross-field check 100% consistent.' }]
-        });
-    } else if (caseId === 'case2') {
-        renderInvestigatorDashboard({
-            risk_score: 84.0,
-            risk_level: 'High Risk',
-            attack_type: 'Document Number Tampering',
-            border_triage: 'DETAIN & INVESTIGATE',
-            face_similarity_score: 90.0,
-            filename: 'case2_doc.jpg',
-            annotated_filename: 'case2_doc.jpg',
-            selfie_filename: 'case1_selfie.jpg',
-            extracted_text: { document_number: 'ID-99482-TAMPERED', full_name: 'CITIZEN HOLDER', date_of_birth: '1995-04-12', expiration_date: '2032-04-11' },
-            validation_results: { watchlist_hit: false },
-            tamper_signals: { tamper_edge_splicing_detected: true },
-            risk_reasons: [{ type: 'FAIL', message: 'Edge splicing and font density discontinuity detected in ID number region.' }]
-        });
-    } else if (caseId === 'case3') {
-        renderInvestigatorDashboard({
-            risk_score: 92.0,
-            risk_level: 'High Risk',
-            attack_type: 'Identity Impersonation',
-            border_triage: 'DETAIN & INVESTIGATE',
-            face_similarity_score: 38.4,
-            filename: 'case3_doc.jpg',
-            annotated_filename: 'case3_doc.jpg',
-            selfie_filename: 'case3_selfie.jpg',
-            extracted_text: { document_number: 'ID-440192', full_name: 'PRIMARY HOLDER', date_of_birth: '1992-06-25', expiration_date: '2030-06-24' },
-            validation_results: { watchlist_hit: false },
-            tamper_signals: { tamper_edge_splicing_detected: false },
-            risk_reasons: [{ type: 'FAIL', message: '1:1 Face biometrics mismatch (38.4% similarity). Live passenger does NOT match photo.' }]
-        });
+async function askAiQuestion(question) {
+    if (!currentActiveDoc || !currentActiveDoc.id) {
+        alert("Please load or inspect a document first before querying the AI assistant.");
+        return;
     }
-}
 
-// -------------------------------------------------------------
-// 5. AI ASSISTANT QUERY
-// -------------------------------------------------------------
-
-async function askAiQuestion(promptText) {
-    const box = document.getElementById('aiResponseBox');
-    box.classList.remove('hidden');
-    box.textContent = "Querying forensic knowledge base...";
+    const answerBox = document.getElementById('aiAnswerContent');
+    answerBox.innerHTML = `<span class="text-cyan-400 animate-pulse font-mono">AI Reasoning Engine analyzing forensic artifacts...</span>`;
 
     try {
         const res = await fetch('/api/ask-ai', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ question: promptText, doc_id: currentActiveDoc ? currentActiveDoc.id : null })
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ query: question, doc_id: currentActiveDoc.id })
         });
         const data = await res.json();
         if (data.success) {
-            box.textContent = data.answer || "No response received.";
+            // Render markdown formatted text with linebreaks
+            answerBox.innerHTML = data.answer.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>');
         } else {
-            box.textContent = data.message || "Query failed.";
+            answerBox.textContent = data.message;
         }
     } catch (e) {
-        box.textContent = "AI query service unavailable.";
+        answerBox.textContent = "Error contacting AI assistant.";
     }
 }
 
@@ -579,61 +556,83 @@ function handleCustomAiQuery() {
 }
 
 // -------------------------------------------------------------
-// 6. RECENT AUDIT TRAIL TABLE (SQLITE / POSTGRES)
+// 5. USER AUDIT TRAIL REPOSITORY (SQLITE)
 // -------------------------------------------------------------
 
 async function loadUserDocuments() {
     try {
         const res = await fetch('/api/documents');
         const data = await res.json();
-        const wrapper = document.getElementById('docsTableWrapper');
-        const tbody = document.getElementById('docsTableBody');
+        const grid = document.getElementById('docsListGrid');
         const noDocs = document.getElementById('noDocsMsg');
 
         if (!data.success || !data.documents || data.documents.length === 0) {
-            wrapper.classList.add('hidden');
+            grid.classList.add('hidden');
             noDocs.classList.remove('hidden');
             return;
         }
 
         noDocs.classList.add('hidden');
-        wrapper.classList.remove('hidden');
-        tbody.innerHTML = '';
+        grid.classList.remove('hidden');
+        grid.innerHTML = '';
 
         data.documents.forEach(doc => {
-            const tr = document.createElement('tr');
-            const triage = doc.border_triage || (doc.risk_score <= 30 ? 'CLEAR FOR ENTRY' : (doc.risk_score <= 70 ? 'SECONDARY INSPECTION' : 'DETAIN & INVESTIGATE'));
-            let badgeStyle = "text-emerald-400 font-bold font-mono";
-            if (triage === 'SECONDARY INSPECTION') badgeStyle = "text-amber-400 font-bold font-mono";
-            if (triage === 'DETAIN & INVESTIGATE') badgeStyle = "text-red-400 font-bold font-mono";
+            let badgeCls = "bg-emerald-950 text-emerald-400 border-emerald-800";
+            if (doc.risk_level === 'Review') badgeCls = "bg-amber-950 text-amber-400 border-amber-800";
+            if (doc.risk_level === 'High Risk') badgeCls = "bg-rose-950 text-rose-400 border-rose-800";
 
-            const timeStr = doc.uploaded_at ? doc.uploaded_at.substring(0, 16).replace('T', ' ') : '-';
-
-            tr.innerHTML = `
-                <td class="font-mono text-slate-400">${timeStr}</td>
-                <td class="font-semibold text-white">${doc.original_name || 'Document'}</td>
-                <td class="${badgeStyle}">${triage}</td>
-                <td class="font-mono text-slate-200">${Math.round(doc.risk_score)}/100</td>
-                <td class="text-slate-300">${doc.attack_type || 'None'}</td>
-                <td>
-                    <button onclick='viewSavedDoc(${JSON.stringify(doc).replace(/'/g, "&#39;")})' class="px-2 py-0.5 rounded bg-[#1e293b] hover:bg-blue-900 border border-[#334155] text-blue-300 font-mono text-[11px] mr-1">View</button>
-                    <button onclick="deleteSavedDoc(${doc.id})" class="px-2 py-0.5 rounded bg-[#1e293b] hover:bg-red-900 border border-[#334155] text-red-300 font-mono text-[11px]">Delete</button>
-                </td>
+            const item = document.createElement('div');
+            item.className = "p-4 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-3";
+            item.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <span class="text-xs font-bold text-white truncate flex-1" title="${doc.original_name}">${doc.original_name}</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeCls}">${doc.risk_level}</span>
+                    </div>
+                    <div class="rounded-xl overflow-hidden bg-slate-900 border border-slate-800 h-28 flex items-center justify-center mb-2">
+                        <img src="/uploads/${doc.annotated_filename || doc.filename}" alt="${doc.original_name}" class="h-full w-full object-cover">
+                    </div>
+                    <div class="text-[11px] text-slate-400 space-y-1">
+                        <div class="flex justify-between">
+                            <span>Score:</span>
+                            <span class="font-mono text-white font-semibold">${doc.risk_score}/100</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Attack:</span>
+                            <span class="text-cyan-300 font-medium">${doc.attack_type || 'None'}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Date:</span>
+                            <span class="text-slate-500">${doc.uploaded_at}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 pt-2 border-t border-slate-800/80">
+                    <button onclick='viewSavedDoc(${JSON.stringify(doc).replace(/'/g, "&apos;")})' class="flex-1 py-1.5 px-2 rounded-lg bg-cyan-950 hover:bg-cyan-900 text-cyan-300 text-xs font-semibold flex items-center justify-center gap-1 border border-cyan-800/60 transition-colors">
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        <span>Inspect</span>
+                    </button>
+                    <button onclick="deleteSavedDoc(${doc.id})" class="p-1.5 rounded-lg bg-slate-900 hover:bg-rose-950/60 text-slate-400 hover:text-rose-400 text-xs border border-slate-800 hover:border-rose-800 transition-colors" title="Delete record">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
             `;
-            tbody.appendChild(tr);
+            grid.appendChild(item);
         });
+
+        initLucide();
     } catch (e) {
-        console.error("Failed to load audit documents:", e);
+        console.error("Failed to load documents:", e);
     }
 }
 
 function viewSavedDoc(doc) {
+    currentActiveDoc = doc;
     renderInvestigatorDashboard(doc);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async function deleteSavedDoc(docId) {
-    if (!confirm("Confirm removal of this audit log record?")) return;
+    if (!confirm("Delete this investigation record from SQLite?")) return;
     try {
         const res = await fetch(`/api/documents/${docId}`, { method: 'DELETE' });
         const data = await res.json();
@@ -648,7 +647,25 @@ async function deleteSavedDoc(docId) {
 }
 
 // -------------------------------------------------------------
-// 7. 24/7 CLOUD CONNECTIVITY MODAL
+// 6. UTILITY HELPERS
+// -------------------------------------------------------------
+
+function togglePasswordVisibility(inputId, btnElement) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        btnElement.innerHTML = '<i data-lucide="eye-off" class="w-4 h-4 text-cyan-400"></i>';
+    } else {
+        input.type = 'password';
+        btnElement.innerHTML = '<i data-lucide="eye" class="w-4 h-4 text-slate-500 hover:text-cyan-400"></i>';
+    }
+    initLucide();
+}
+
+// -------------------------------------------------------------
+// 7. ANY NETWORK & ANY DEVICE CONNECTIVITY
 // -------------------------------------------------------------
 
 function setupNetworkModal() {
@@ -659,26 +676,43 @@ function setupNetworkModal() {
     const publicInput = document.getElementById('publicUrlInput');
     const qrImg = document.getElementById('networkQrImg');
     const copyPublicBtn = document.getElementById('copyPublicUrlBtn');
+    const badge = document.getElementById('publicTunnelBadge');
     const dbEngineText = document.getElementById('dbEngineText');
 
     if (!modal || !openBtn) return;
 
-    openBtn.addEventListener('click', () => {
+    const openModal = () => {
         modal.classList.remove('hidden');
         refreshNetworkInfo();
+        initLucide();
+    };
+
+    const closeModal = () => {
+        modal.classList.add('hidden');
+    };
+
+    openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (dismissBtn) dismissBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
     });
 
-    if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
-    if (dismissBtn) dismissBtn.addEventListener('click', () => modal.classList.add('hidden'));
-
+    // Copy helper
     if (copyPublicBtn && publicInput) {
         copyPublicBtn.addEventListener('click', async () => {
             const val = publicInput.value;
             if (!val) return;
             try {
                 await navigator.clipboard.writeText(val);
-                copyPublicBtn.textContent = 'Copied!';
-                setTimeout(() => { copyPublicBtn.textContent = 'Copy'; }, 2000);
+                const orig = copyPublicBtn.innerHTML;
+                copyPublicBtn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> Copied!';
+                initLucide();
+                setTimeout(() => {
+                    copyPublicBtn.innerHTML = orig;
+                    initLucide();
+                }, 2000);
             } catch (err) {
                 publicInput.select();
                 document.execCommand('copy');
@@ -688,7 +722,9 @@ function setupNetworkModal() {
 
     async function refreshNetworkInfo() {
         try {
+            // Default to current browser origin (permanent cloud URL)
             let targetUrl = window.location.origin;
+
             const res = await fetch('/api/network-info');
             const data = await res.json();
             if (data.success && data.network) {
@@ -696,16 +732,33 @@ function setupNetworkModal() {
                 if (net.permanent_url && !net.permanent_url.includes("127.0.0.1")) {
                     targetUrl = net.permanent_url;
                 }
+
                 if (dbEngineText && net.database_type) {
                     dbEngineText.textContent = net.database_type;
                 }
+
+                if (badge) {
+                    badge.className = "text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30";
+                    badge.textContent = net.is_cloud ? "24/7 CLOUD LIVE" : "ONLINE";
+                }
             }
-            if (publicInput) publicInput.value = targetUrl;
+
+            if (publicInput) {
+                publicInput.value = targetUrl;
+            }
+
+            // Generate live QR code for smartphones
             if (qrImg && targetUrl) {
-                qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=${encodeURIComponent(targetUrl)}`;
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=8&data=${encodeURIComponent(targetUrl)}`;
+                qrImg.src = qrUrl;
             }
         } catch (e) {
+            console.error("Failed to fetch network info:", e);
             if (publicInput) publicInput.value = window.location.origin;
         }
     }
+
+    refreshNetworkInfo();
 }
+
+

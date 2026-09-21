@@ -3,34 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID SHIELD | Border Checkpoint & Credential Inspection Console</title>
-    <!-- Tailwind CSS CDN (Configured for strict institutional theme) -->
+    <title>ID SHIELD | Border Checkpoint & Credential Inspection System</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        gov: {
-                            900: '#0b0f17',
-                            800: '#111827',
-                            700: '#1e293b',
-                            600: '#334155',
-                            500: '#475569',
-                            400: '#64748b',
-                            300: '#94a3b8',
-                            200: '#cbd5e1',
-                            100: '#f1f5f9'
+                        slate: {
+                            850: '#111726',
+                            900: '#0d1320',
+                            950: '#070b13'
                         },
-                        alert: {
-                            clear: '#15803d',
-                            secondary: '#b45309',
-                            detain: '#b91c1c'
+                        fed: {
+                            blue: '#1d4ed8',
+                            blueHover: '#1e40af',
+                            card: '#0f172a',
+                            border: '#1e293b'
                         }
-                    },
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace']
                     }
                 }
             }
@@ -38,395 +29,492 @@
     </script>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body class="bg-[#0b0f17] text-slate-100 min-h-screen font-sans antialiased flex flex-col">
+<body class="bg-[#070b13] text-slate-100 min-h-screen flex flex-col antialiased">
 
-    <!-- Operational Top Navigation Header -->
-    <header class="border-b border-[#26334d] bg-[#111827] sticky top-0 z-50">
-        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-            <!-- Institutional System Identity -->
+    <!-- Primary Station Header -->
+    <header class="border-b border-slate-800 bg-[#0d1320] sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+            <!-- Institutional Emblem & Identification -->
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded bg-[#1e293b] border border-[#334155] flex items-center justify-center font-bold text-sm text-blue-400">
+                <div class="w-8 h-8 bg-blue-700 text-white rounded flex items-center justify-center font-bold text-sm tracking-wider">
                     IDS
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="text-base font-bold tracking-tight text-white">ID SHIELD</span>
-                        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-950/80 border border-blue-800 text-blue-300 font-semibold">v3.4-ENTERPRISE</span>
+                        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">VER 2.4</span>
                     </div>
-                    <div class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Border Checkpoint & Travel Document Screening Console</div>
+                    <div class="text-[10px] font-medium tracking-wide text-slate-400">Automated Border Control & Credential Screening Platform</div>
                 </div>
             </div>
 
-            <!-- Operational Telemetry Bar & Controls -->
-            <div class="flex items-center gap-3">
-                <div class="hidden lg:flex items-center gap-3 text-xs font-mono text-slate-400 border border-[#26334d] rounded px-3 py-1 bg-[#0d1524]">
-                    <span>STATUS: <strong class="text-emerald-400">ONLINE</strong></span>
-                    <span class="text-slate-600">|</span>
-                    <span>STATION: <strong class="text-slate-200">GATE-04</strong></span>
-                    <span class="text-slate-600">|</span>
-                    <span>ICAO 9303: <strong class="text-slate-200">ACTIVE</strong></span>
+            <!-- Operational System Indicators -->
+            <div class="hidden lg:flex items-center gap-4 text-xs font-mono">
+                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>ICAO 9303 ENGINE: ACTIVE</span>
                 </div>
+                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>INTERPOL SLTD: CONNECTED</span>
+                </div>
+            </div>
 
-                <!-- 24/7 Cloud Access Button -->
-                <button id="btnNetworkModal" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-semibold bg-[#1e293b] hover:bg-[#283852] text-slate-200 border border-[#334155] transition">
-                    <span>Cloud / Mobile Access</span>
+            <!-- Action & Auth Area -->
+            <div class="flex items-center gap-2.5">
+                <button id="btnNetworkModal" class="px-2.5 py-1.5 rounded text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span>System Connectivity</span>
                 </button>
-
                 <div id="navAuthArea" class="flex items-center gap-2"></div>
             </div>
         </div>
     </header>
 
-    <!-- Main Operational Workspace -->
-    <main class="flex-grow max-w-[1600px] w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
 
         <!-- ============================================================== -->
-        <!-- VIEW 1: AUTHENTICATION (SIGN IN & REGISTRATION)                -->
+        <!-- VIEW 1: AUTHENTICATION CONSOLE                                 -->
         <!-- ============================================================== -->
-        <section id="authSection" class="hidden fixed inset-0 top-14 z-40 flex items-center justify-center p-4 bg-[#0b0f17]/95 overflow-y-auto">
-            <div class="w-full max-w-md my-auto">
-                <div class="panel p-6 shadow-none">
-                    <div class="border-b border-[#26334d] pb-4 mb-5">
-                        <h2 class="text-lg font-bold text-white tracking-tight" id="authTitle">Operator Authentication</h2>
-                        <p class="text-xs text-slate-400 mt-0.5" id="authSubtitle">Authorized security personnel credential verification</p>
-                    </div>
-
-                    <!-- Auth Mode Toggle -->
-                    <div class="flex rounded bg-[#0b0f17] p-1 border border-[#26334d] mb-4">
-                        <button type="button" id="tabSignIn" class="flex-1 py-1.5 text-xs font-bold rounded bg-blue-600 text-white transition">
-                            Operator Sign In
-                        </button>
-                        <button type="button" id="tabSignUp" class="flex-1 py-1.5 text-xs font-medium rounded text-slate-400 hover:text-white transition">
-                            Register Station
-                        </button>
-                    </div>
-
-                    <!-- Alert message box -->
-                    <div id="authAlert" class="hidden mb-4 p-3 rounded text-xs border flex items-start gap-2">
-                        <span id="authAlertText" class="flex-1 font-mono"></span>
-                    </div>
-
-                    <!-- Sign In Form -->
-                    <form id="signInForm" class="space-y-3">
-                        <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Operator Email</label>
-                            <input type="email" id="loginEmail" required placeholder="officer@checkpoint.gov" class="w-full bg-[#0b0f17] border border-[#26334d] rounded py-2 px-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Access Credential</label>
-                            <div class="relative">
-                                <input type="password" id="loginPassword" required placeholder="Enter password" class="w-full bg-[#0b0f17] border border-[#26334d] rounded py-2 px-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 font-mono">
-                                <button type="button" onclick="togglePasswordVisibility('loginPassword', this)" class="absolute right-2.5 top-2 text-[10px] text-slate-400 hover:text-white font-mono">SHOW</button>
-                            </div>
-                        </div>
-                        <button type="submit" id="btnSubmitSignIn" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded transition uppercase tracking-wider">
-                            Authenticate
-                        </button>
-                    </form>
-
-                    <!-- Sign Up Form -->
-                    <form id="signUpForm" class="hidden space-y-3">
-                        <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Officer / Station Name</label>
-                            <input type="text" id="regName" required placeholder="Officer / Gate 4 Terminal" class="w-full bg-[#0b0f17] border border-[#26334d] rounded py-2 px-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Station Email</label>
-                            <input type="email" id="regEmail" required placeholder="officer@checkpoint.gov" class="w-full bg-[#0b0f17] border border-[#26334d] rounded py-2 px-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Password</label>
-                            <div class="relative">
-                                <input type="password" id="regPassword" required placeholder="Create secure password" class="w-full bg-[#0b0f17] border border-[#26334d] rounded py-2 px-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 font-mono">
-                                <button type="button" onclick="togglePasswordVisibility('regPassword', this)" class="absolute right-2.5 top-2 text-[10px] text-slate-400 hover:text-white font-mono">SHOW</button>
-                            </div>
-                        </div>
-                        <button type="submit" id="btnSubmitSignUp" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded transition uppercase tracking-wider">
-                            Register Station Account
-                        </button>
-                    </form>
-
-                    <div class="mt-4 pt-3 border-t border-[#26334d] text-center text-[10px] text-slate-500 font-mono">
-                        OFFICIAL USE ONLY • ALL SESSIONS AUDITED UNDER ICAO 9303 STANDARDS
-                    </div>
+        <section id="authSection" class="hidden fixed inset-0 top-14 z-50 flex items-center justify-center p-4 bg-[#070b13]/90 overflow-y-auto">
+            <div class="w-full max-w-md bg-[#0f172a] border border-slate-700 rounded p-6 sm:p-8 space-y-5">
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-xl font-bold text-white tracking-tight" id="authTitle">Officer Authentication</h2>
+                    <p class="text-xs text-slate-400 mt-1" id="authSubtitle">Authorized security personnel login for ID SHIELD</p>
                 </div>
+
+                <!-- Mode Toggle -->
+                <div class="flex bg-slate-950 p-1 rounded border border-slate-800 text-xs">
+                    <button type="button" id="tabSignIn" class="flex-1 py-1.5 font-medium rounded bg-blue-700 text-white transition-colors">
+                        Sign In
+                    </button>
+                    <button type="button" id="tabSignUp" class="flex-1 py-1.5 font-medium rounded text-slate-400 hover:text-white transition-colors">
+                        Register Account
+                    </button>
+                </div>
+
+                <!-- Alert box -->
+                <div id="authAlert" class="hidden p-3 rounded text-xs border border-slate-700 bg-slate-900 text-slate-200">
+                    <span id="authAlertText"></span>
+                </div>
+
+                <!-- Sign In Form -->
+                <form id="signInForm" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-medium text-slate-300 mb-1">Official Email Address</label>
+                        <input type="email" id="loginEmail" required placeholder="officer@agency.gov" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-white placeholder-slate-600 focus:border-blue-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-300 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="loginPassword" required placeholder="Enter password" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 pr-10 text-white placeholder-slate-600 focus:border-blue-600 focus:outline-none">
+                            <button type="button" onclick="togglePasswordVisibility('loginPassword', this)" class="absolute right-2.5 top-2 text-slate-500 hover:text-slate-300">Show</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 px-4 rounded bg-blue-700 hover:bg-blue-600 text-white font-medium text-xs transition-colors">
+                        Authenticate Officer Session
+                    </button>
+                </form>
+
+                <!-- Sign Up Form -->
+                <form id="signUpForm" class="hidden space-y-4 text-xs">
+                    <div>
+                        <label class="block font-medium text-slate-300 mb-1">Officer Name & Badge Number</label>
+                        <input type="text" id="regName" required placeholder="Inspector Officer ID" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-white placeholder-slate-600 focus:border-blue-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-300 mb-1">Official Email Address</label>
+                        <input type="email" id="regEmail" required placeholder="officer@agency.gov" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-white placeholder-slate-600 focus:border-blue-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-300 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="regPassword" required placeholder="Create password" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 pr-10 text-white placeholder-slate-600 focus:border-blue-600 focus:outline-none">
+                            <button type="button" onclick="togglePasswordVisibility('regPassword', this)" class="absolute right-2.5 top-2 text-slate-500 hover:text-slate-300">Show</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-300 mb-1">Confirm Password</label>
+                        <div class="relative">
+                            <input type="password" id="regConfirmPassword" required placeholder="Confirm password" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 pr-10 text-white placeholder-slate-600 focus:border-blue-600 focus:outline-none">
+                            <button type="button" onclick="togglePasswordVisibility('regConfirmPassword', this)" class="absolute right-2.5 top-2 text-slate-500 hover:text-slate-300">Show</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 px-4 rounded bg-blue-700 hover:bg-blue-600 text-white font-medium text-xs transition-colors">
+                        Register Credentials
+                    </button>
+                </form>
             </div>
         </section>
 
         <!-- ============================================================== -->
-        <!-- VIEW 2: DUAL-PANE OPERATIONAL WORKSTATION                      -->
+        <!-- VIEW 2: PRIMARY INSPECTION WORKSTATION                         -->
         <!-- ============================================================== -->
         <section id="dashboardSection" class="space-y-6">
 
-            <!-- Preloaded Test Scenarios Bar -->
-            <div class="panel p-3">
-                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
-                    <div class="flex items-center gap-2">
-                        <span class="text-[11px] font-bold uppercase text-slate-400 tracking-wider">Preset Scenarios:</span>
+            <!-- Operational System Banner -->
+            <div class="bg-[#0f172a] border border-slate-800 rounded p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-lg font-bold text-white tracking-tight">Border Inspection & Travel Document Screening Station</h1>
+                    <p class="text-xs text-slate-400 mt-0.5">Automated document integrity screening, ICAO 9303 checksum validation, and 1:1 passenger biometric verification.</p>
+                </div>
+                <div class="flex items-center gap-2 font-mono text-xs">
+                    <div class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                        Station Mode: <span class="text-emerald-400 font-semibold">Triage Assist</span>
                     </div>
-                    <div class="flex flex-wrap items-center gap-2 text-xs">
-                        <button onclick="runDemoCase('border_case1')" class="px-2.5 py-1 rounded bg-[#1e293b] hover:bg-[#283852] border border-emerald-700/60 text-emerald-300 font-medium transition">
-                            Case A: Valid Passport & Biometrics
-                        </button>
-                        <button onclick="runDemoCase('border_case2')" class="px-2.5 py-1 rounded bg-[#1e293b] hover:bg-[#283852] border border-red-700/60 text-red-300 font-medium transition">
-                            Case B: Tampered Stamp & Spliced DOB
-                        </button>
-                        <button onclick="runDemoCase('border_case3')" class="px-2.5 py-1 rounded bg-[#1e293b] hover:bg-[#283852] border border-red-700/60 text-red-300 font-medium transition">
-                            Case C: Interpol Stolen Passport Hit
-                        </button>
-                        <span class="text-slate-600 hidden sm:inline">|</span>
-                        <button onclick="runDemoCase('case1')" class="px-2.5 py-1 rounded bg-[#1e293b] hover:bg-[#283852] border border-slate-700 text-slate-300 transition">
-                            KYC 1: Citizen ID
-                        </button>
-                        <button onclick="runDemoCase('case2')" class="px-2.5 py-1 rounded bg-[#1e293b] hover:bg-[#283852] border border-slate-700 text-slate-300 transition">
-                            KYC 2: ID Number Spliced
-                        </button>
-                        <button onclick="runDemoCase('case3')" class="px-2.5 py-1 rounded bg-[#1e293b] hover:bg-[#283852] border border-slate-700 text-slate-300 transition">
-                            KYC 3: Impostor Face Mismatch
-                        </button>
+                    <div class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                        Response Target: <span class="text-blue-400 font-semibold">&lt; 4.0s</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Dual-Pane Console: Left = Intake, Right = Inspection Output -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-                <!-- LEFT PANE: CREDENTIAL INTAKE (5 COLS) -->
-                <div class="lg:col-span-5 space-y-4">
-                    <div class="panel">
-                        <div class="panel-header flex items-center justify-between">
-                            <span>Credential Intake & Scanning</span>
-                            <span class="text-[10px] text-slate-500 font-mono">PANEL 1</span>
+            <!-- Standardized Screening Test Scenarios (Preset Vectors) -->
+            <div class="bg-[#0f172a] border border-slate-800 rounded p-4 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Preloaded Inspection Test Scenarios</span>
+                    <span class="text-[11px] text-slate-400">Select scenario to execute immediate automated triage verification</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+                    <button type="button" onclick="loadDemoCase('border_case1')" class="text-left p-3 rounded bg-slate-900 border border-slate-800 hover:border-blue-600 transition-colors space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-white">Scenario A: Genuine Passport</span>
+                            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">CLEAR</span>
                         </div>
-                        <div class="p-4 space-y-4">
-                            <!-- Credential Category -->
-                            <div>
-                                <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">Document Category</label>
-                                <select id="docTypeSelect" class="w-full bg-[#0b0f17] border border-[#26334d] rounded p-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
-                                    <option value="Passport" selected>Passport (ICAO 9303 MRZ Type 3)</option>
-                                    <option value="Visa">Consular Visa Document</option>
-                                    <option value="National ID">National Citizen Identity Card</option>
-                                    <option value="Driving License">State Driving License</option>
-                                    <option value="Travel Permit">Cross-Border Transit Permit</option>
-                                </select>
-                            </div>
+                        <p class="text-[11px] text-slate-400">Valid ICAO 9303 MRZ, authentic consular stamp, 96.8% facial biometric match.</p>
+                    </button>
 
-                            <!-- Document File Upload DropZone -->
-                            <div>
-                                <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">1. Primary Credential Scan</label>
-                                <div id="docDropZone" class="border border-dashed border-[#334155] hover:border-blue-500 rounded p-4 text-center bg-[#0d1524] cursor-pointer transition">
-                                    <span class="text-xs text-slate-300 block font-medium" id="docFileLabel">Select or Drag Credential Image / PDF</span>
-                                    <span class="text-[10px] text-slate-500 block mt-0.5 font-mono">JPG, PNG, PDF, WEBP (Max 20MB)</span>
-                                    <input type="file" id="docInput" accept="image/*,application/pdf" class="hidden">
-                                </div>
-                            </div>
-
-                            <!-- Live Selfie / Facial Biometrics Upload -->
-                            <div>
-                                <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">2. Live Passenger Photo / Selfie</label>
-                                <div id="selfieDropZone" class="border border-dashed border-[#334155] hover:border-blue-500 rounded p-3 text-center bg-[#0d1524] cursor-pointer transition">
-                                    <span class="text-xs text-slate-300 block font-medium" id="selfieFileLabel">Select Live Photo for 1:1 Face Verification</span>
-                                    <span class="text-[10px] text-slate-500 block mt-0.5 font-mono">Passenger live camera capture or image file</span>
-                                    <input type="file" id="selfieInput" accept="image/*" class="hidden">
-                                </div>
-                            </div>
-
-                            <!-- Cross-Field Metadata Inputs -->
-                            <div class="border-t border-[#26334d] pt-3 space-y-2">
-                                <label class="block text-[11px] font-bold uppercase text-slate-400">3. Registry Cross-Check Data (Optional)</label>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                                    <input type="text" id="enteredDocNumber" placeholder="Doc Number" class="bg-[#0b0f17] border border-[#26334d] rounded p-1.5 text-xs text-white placeholder-slate-600 font-mono">
-                                    <input type="text" id="enteredFullName" placeholder="Full Name" class="bg-[#0b0f17] border border-[#26334d] rounded p-1.5 text-xs text-white placeholder-slate-600 font-mono">
-                                    <input type="text" id="enteredDob" placeholder="DOB (YYYY-MM-DD)" class="bg-[#0b0f17] border border-[#26334d] rounded p-1.5 text-xs text-white placeholder-slate-600 font-mono">
-                                </div>
-                            </div>
-
-                            <!-- Submit Verification Button -->
-                            <button type="button" id="btnAnalyze" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded transition uppercase tracking-wider flex items-center justify-center gap-2">
-                                <span id="analyzeBtnText">Execute Inspection & Verification</span>
-                            </button>
+                    <button type="button" onclick="loadDemoCase('border_case2')" class="text-left p-3 rounded bg-slate-900 border border-slate-800 hover:border-amber-600 transition-colors space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-white">Scenario B: Tampered Stamp & DOB</span>
+                            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">DETAIN</span>
                         </div>
-                    </div>
+                        <p class="text-[11px] text-slate-400">Forged visa stamp contour geometry, ink bleed, and spliced date of birth digits.</p>
+                    </button>
 
-                    <!-- AI Intelligence & Q&A Tool -->
-                    <div class="panel">
-                        <div class="panel-header flex items-center justify-between">
-                            <span>Forensic AI Assistant Query</span>
-                            <span class="text-[10px] text-slate-500 font-mono">ASSIST</span>
+                    <button type="button" onclick="loadDemoCase('border_case3')" class="text-left p-3 rounded bg-slate-900 border border-slate-800 hover:border-rose-600 transition-colors space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-white">Scenario C: Stolen / Interpol SLTD</span>
+                            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">DETAIN</span>
                         </div>
-                        <div class="p-3 space-y-2">
-                            <div class="flex items-center gap-2">
-                                <input type="text" id="customAiQuery" placeholder="Ask question about current document..." class="flex-1 bg-[#0b0f17] border border-[#26334d] rounded p-1.5 text-xs text-white placeholder-slate-600">
-                                <button type="button" onclick="handleCustomAiQuery()" class="px-3 py-1.5 bg-[#1e293b] hover:bg-[#283852] border border-[#334155] text-xs font-semibold rounded text-white transition">
-                                    Query
-                                </button>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 text-[11px]">
-                                <button type="button" onclick="askAiQuestion('Why is this document flagged?')" class="px-2 py-0.5 rounded bg-[#0d1524] border border-[#26334d] text-slate-300 hover:text-white">Why Flagged?</button>
-                                <button type="button" onclick="askAiQuestion('Explain the MRZ checksum error.')" class="px-2 py-0.5 rounded bg-[#0d1524] border border-[#26334d] text-slate-300 hover:text-white">MRZ Checksum?</button>
-                                <button type="button" onclick="askAiQuestion('What are the tampering signals detected?')" class="px-2 py-0.5 rounded bg-[#0d1524] border border-[#26334d] text-slate-300 hover:text-white">Tamper Signals?</button>
-                            </div>
-                            <div id="aiResponseBox" class="hidden p-2.5 rounded bg-[#0b0f17] border border-[#26334d] text-xs text-slate-300 font-mono leading-relaxed max-h-36 overflow-y-auto"></div>
+                        <p class="text-[11px] text-slate-400">Matched active Interpol SLTD alert. Travel authorization revoked.</p>
+                    </button>
+
+                    <button type="button" onclick="loadDemoCase('case1')" class="text-left p-3 rounded bg-slate-900 border border-slate-800 hover:border-blue-600 transition-colors space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-white">KYC 1: Authentic National ID</span>
+                            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">PASS</span>
                         </div>
+                        <p class="text-[11px] text-slate-400">Verified civil registry alignment and consistent photo edge characteristics.</p>
+                    </button>
+
+                    <button type="button" onclick="loadDemoCase('case2')" class="text-left p-3 rounded bg-slate-900 border border-slate-800 hover:border-rose-600 transition-colors space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-white">KYC 2: Spliced Document Number</span>
+                            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">FAIL</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400">Edge density anomalies and pixel compression disparity in ID field.</p>
+                    </button>
+
+                    <button type="button" onclick="loadDemoCase('case3')" class="text-left p-3 rounded bg-slate-900 border border-slate-800 hover:border-rose-600 transition-colors space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-white">KYC 3: Biometric Face Mismatch</span>
+                            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">MISMATCH</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400">Document photo does not match traveler selfie (38.4% similarity).</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Primary Submission & Input Console -->
+            <div class="bg-[#0f172a] border border-slate-800 rounded p-5 space-y-5">
+                <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-white">Direct Credential & Biometric Ingestion</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Upload travel document image, live passenger selfie, and optional registration data for analysis.</p>
                     </div>
                 </div>
 
-                <!-- RIGHT PANE: INSPECTION & FORENSIC FINDINGS (7 COLS) -->
-                <div class="lg:col-span-7 space-y-4">
+                <form id="multiModalForm" class="space-y-4">
+                    <!-- Credential Type Selector -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Credential Classification</label>
+                        <select id="docTypeSelect" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs text-white focus:border-blue-600 focus:outline-none">
+                            <option value="Passport">Passport (ICAO 9303 MRZ Lines 1 & 2, Biometrics, SLTD Check)</option>
+                            <option value="Visa">Visa Document (Category, Validity Window, Consular Stamp)</option>
+                            <option value="National ID">National Citizen Identity Card</option>
+                            <option value="Driving License">Driver License (Authority & Class Verification)</option>
+                            <option value="Travel Permit">Transit Permit (Gate & Route Authorization)</option>
+                        </select>
+                    </div>
 
-                    <!-- Triage Decision Banner -->
-                    <div id="triageBanner" class="panel p-4 triage-clear">
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                            <div>
-                                <div class="text-[10px] font-mono uppercase tracking-wider opacity-80">BORDER SECURITY TRIAGE DECISION</div>
-                                <div class="text-xl font-extrabold tracking-tight" id="dashTriageDecision">CLEAR FOR ENTRY</div>
-                                <div class="text-xs opacity-90 mt-0.5" id="dashRiskLevel">Score: 6/100 • Low Risk • Valid ICAO 9303 Credential</div>
+                    <!-- Ingestion Slots -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="space-y-1.5">
+                            <label class="block font-medium text-slate-300">1. Primary Document File <span class="text-rose-400">*</span></label>
+                            <div id="docDropZone" class="border border-dashed border-slate-700 hover:border-blue-600 rounded p-5 text-center bg-slate-950/60 cursor-pointer">
+                                <span class="text-xs text-white block font-medium" id="docFileLabel">Select Document Scan</span>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">PNG, JPG, PDF</span>
+                                <input type="file" id="primaryDocInput" accept="image/*,application/pdf" class="hidden">
                             </div>
-                            <div class="text-right sm:text-right">
-                                <span class="text-3xl font-mono font-bold" id="dashRiskScore">6</span>
-                                <span class="text-xs opacity-80">/100</span>
-                                <div class="text-[10px] font-mono uppercase tracking-wider opacity-80">RISK INDEX</div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="block font-medium text-slate-300">2. Live Passenger Photo (Biometrics)</label>
+                            <div id="selfieDropZone" class="border border-dashed border-slate-700 hover:border-blue-600 rounded p-5 text-center bg-slate-950/60 cursor-pointer">
+                                <span class="text-xs text-white block font-medium" id="selfieFileLabel">Select Live Photo</span>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">1:1 Biometric Comparison</span>
+                                <input type="file" id="selfieInput" accept="image/*" class="hidden">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="block font-medium text-slate-300">3. Supporting Document (Optional)</label>
+                            <div id="supDropZone" class="border border-dashed border-slate-700 hover:border-blue-600 rounded p-5 text-center bg-slate-950/60 cursor-pointer">
+                                <span class="text-xs text-white block font-medium" id="supFileLabel">Select Secondary Record</span>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">Civil Registry / Permit</span>
+                                <input type="file" id="supDocInput" accept="image/*,application/pdf" class="hidden">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Visual Inspection & Portrait Split -->
-                    <div class="panel">
-                        <div class="panel-header flex items-center justify-between">
-                            <span>Forensic Document View & Biometric Comparison</span>
-                            <span class="text-[10px] text-slate-500 font-mono">PANEL 2</span>
+                    <!-- Metadata Cross-Check Inputs -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-800 text-xs">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Declared Full Name</label>
+                            <input type="text" id="enteredName" placeholder="Full name declared by traveler" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-1.5 text-white placeholder-slate-600 focus:border-blue-600 focus:outline-none">
                         </div>
-                        <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Document Scan -->
-                            <div>
-                                <div class="text-[11px] font-bold uppercase text-slate-400 mb-1">Credential Scan (Forensic Overlay)</div>
-                                <div class="bg-[#0b0f17] border border-[#26334d] rounded h-56 flex items-center justify-center overflow-hidden">
-                                    <img id="dashDocImg" src="/static/uploads/case_border_passport.jpg" alt="Document Preview" class="h-full w-full object-contain">
-                                </div>
-                            </div>
-
-                            <!-- Biometrics Comparison -->
-                            <div>
-                                <div class="text-[11px] font-bold uppercase text-slate-400 mb-1 flex items-center justify-between">
-                                    <span>1:1 Biometric Comparison</span>
-                                    <span id="dashFaceScoreBadge" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-800 text-emerald-300 font-bold">MATCH: 96.8%</span>
-                                </div>
-                                <div class="bg-[#0b0f17] border border-[#26334d] rounded h-56 p-2 flex items-center justify-around gap-2">
-                                    <div class="text-center w-1/2 h-full flex flex-col justify-between">
-                                        <div class="h-44 bg-[#111827] border border-[#26334d] rounded overflow-hidden flex items-center justify-center">
-                                            <img id="dashDocFaceImg" src="/static/uploads/case_border_passport.jpg" class="h-full w-full object-cover">
-                                        </div>
-                                        <span class="text-[10px] font-mono text-slate-400 mt-1">Document Photo</span>
-                                    </div>
-                                    <div class="text-center w-1/2 h-full flex flex-col justify-between">
-                                        <div class="h-44 bg-[#111827] border border-[#26334d] rounded overflow-hidden flex items-center justify-center">
-                                            <img id="dashLiveSelfieImg" src="/static/uploads/case_border_passport_selfie.jpg" class="h-full w-full object-cover">
-                                        </div>
-                                        <span class="text-[10px] font-mono text-slate-400 mt-1">Live Passenger</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Declared Date of Birth</label>
+                            <input type="date" id="enteredDOB" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-1.5 text-white focus:border-blue-600 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Declared Document Serial</label>
+                            <input type="text" id="enteredIDNum" placeholder="Document serial number" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-1.5 text-white placeholder-slate-600 focus:border-blue-600 focus:outline-none">
                         </div>
                     </div>
 
-                    <!-- ICAO 9303 Machine Readable Zone (MRZ) Readout Table -->
-                    <div class="panel">
-                        <div class="panel-header flex items-center justify-between">
-                            <span>ICAO 9303 MRZ Readout & Checksum Verification</span>
-                            <span id="mrzStatusBadge" class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-950 border border-emerald-800 text-emerald-300 font-bold">CHECKSUMS VALID</span>
-                        </div>
-                        <div class="p-3 bg-[#0b0f17] code-text space-y-1.5 border-b border-[#26334d]">
-                            <div id="mrzLine1" class="text-slate-300 tracking-wider overflow-x-auto whitespace-nowrap">P&lt;UTOCHEN&lt;&lt;ALEXANDER&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
-                            <div id="mrzLine2" class="text-slate-300 tracking-wider overflow-x-auto whitespace-nowrap">P984210744UTO9408144M3108138&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;06</div>
-                        </div>
-                        <div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                            <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Document Number</span>
-                                <span id="valDocNo" class="font-mono text-white font-semibold">P98421074</span>
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Holder Full Name</span>
-                                <span id="valName" class="font-mono text-white font-semibold">ALEXANDER CHEN</span>
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Date of Birth</span>
-                                <span id="valDob" class="font-mono text-white font-semibold">1994-08-14</span>
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Expiration Date</span>
-                                <span id="valExpiry" class="font-mono text-white font-semibold">2031-08-13</span>
-                            </div>
-                        </div>
+                    <button type="submit" class="w-full py-2.5 px-4 rounded bg-blue-700 hover:bg-blue-600 text-white font-semibold text-xs tracking-wide transition-colors flex items-center justify-center gap-2">
+                        <span>Execute Automated Screening & Forensics</span>
+                    </button>
+                </form>
+
+                <!-- Pipeline Processing State with Skeleton Loaders (#21 Compliance) -->
+                <div id="pipelineProgress" class="hidden p-4 rounded bg-slate-950 border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-medium text-slate-200" id="pipelineStatusText">Executing Multi-Layer Verification Suite...</span>
+                        <span id="pipelinePercent" class="font-mono text-blue-400 font-bold">15%</span>
                     </div>
-
-                    <!-- Telemetry Cards & Fraud Finding Logs -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Watchlist Status -->
-                        <div class="panel p-3 space-y-2">
-                            <div class="text-[11px] font-bold uppercase text-slate-400 flex items-center justify-between">
-                                <span>Interpol SLTD & Border Watchlist</span>
-                                <span id="watchlistBadge" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-800 text-emerald-300 font-bold">CLEAR</span>
-                            </div>
-                            <div class="text-xs text-slate-300 font-mono" id="watchlistMsg">
-                                Zero records found in Stolen & Lost Travel Documents database.
-                            </div>
-                        </div>
-
-                        <!-- Forensic Tampering Signals -->
-                        <div class="panel p-3 space-y-2">
-                            <div class="text-[11px] font-bold uppercase text-slate-400 flex items-center justify-between">
-                                <span>Image Forensics & Splicing</span>
-                                <span id="tamperBadge" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-800 text-emerald-300 font-bold">NORMAL</span>
-                            </div>
-                            <div class="text-xs text-slate-300 font-mono" id="tamperMsg">
-                                Edge density uniform. No spliced text, altered photo, or stamp anomalies.
-                            </div>
-                        </div>
+                    <div class="w-full bg-slate-800 rounded h-1.5 overflow-hidden">
+                        <div id="pipelineBar" class="bg-blue-600 h-1.5 rounded transition-all duration-300 w-[15%]"></div>
                     </div>
-
-                    <!-- Inspection Findings Log -->
-                    <div class="panel">
-                        <div class="panel-header">
-                            <span>Inspection Findings & Reasons</span>
-                        </div>
-                        <div id="findingsList" class="p-3 space-y-1 text-xs">
-                            <div class="text-emerald-400 font-mono">[PASS] Module 1 (OCR): High confidence field extraction (98.4%).</div>
-                            <div class="text-emerald-400 font-mono">[PASS] Module 2 (Validation): Travel authorization valid; Watchlist database CLEAR.</div>
-                            <div class="text-emerald-400 font-mono">[PASS] Module 3 (Tampering): No altered photo, modified DOB, or tampered stamp.</div>
-                            <div class="text-emerald-400 font-mono">[PASS] Module 4 (Biometrics): Passenger live face matches credential photo (96.8%).</div>
-                        </div>
+                    <!-- Skeleton preview rows -->
+                    <div class="grid grid-cols-3 gap-2 pt-2">
+                        <div class="h-6 skeleton-box"></div>
+                        <div class="h-6 skeleton-box"></div>
+                        <div class="h-6 skeleton-box"></div>
                     </div>
-
                 </div>
             </div>
 
             <!-- ============================================================== -->
-            <!-- SECTION 3: RECENT INSPECTION AUDIT TRAIL TABLE                 -->
+            <!-- LIVE INSPECTION DASHBOARD RESULTS                              -->
             <!-- ============================================================== -->
-            <div class="panel">
-                <div class="panel-header flex items-center justify-between">
-                    <span>Station Inspection Audit Trail (SQLite / Cloud PostgreSQL)</span>
-                    <button onclick="loadUserDocuments()" class="text-xs text-blue-400 hover:text-blue-300 font-mono">Refresh</button>
+            <div id="analysisResultCard" class="hidden space-y-5">
+                
+                <!-- Border Security Personnel Assist: Triage Decision Banner -->
+                <div id="borderTriageBanner" class="p-4 rounded border flex flex-col sm:flex-row sm:items-center justify-between gap-3 triage-banner-clear">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded bg-black/20 flex items-center justify-center font-black text-sm" id="triageIconBox">
+                            [OK]
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-mono uppercase tracking-wider opacity-80">Border Control Triage Protocol</div>
+                            <div class="text-xl font-bold tracking-tight" id="borderTriageTitle">CLEAR FOR ENTRY</div>
+                            <div class="text-xs opacity-90" id="borderTriageSubtitle">Automated e-Gate clearance authorized. Zero watchlist hits.</div>
+                        </div>
+                    </div>
+                    <div class="font-mono text-xs text-right">
+                        <div>Throughput Target: <span class="font-bold">Verified &lt; 3.5s</span></div>
+                        <div class="text-[10px] opacity-75">Automated Border Control Protocol</div>
+                    </div>
                 </div>
-                <div class="p-4">
-                    <div id="noDocsMsg" class="py-8 text-center text-slate-500 text-xs font-mono">
-                        No inspection records logged in this session.
+
+                <!-- Core Inspection Results & Metrics Grid -->
+                <div class="bg-[#0f172a] border border-slate-800 rounded p-5 space-y-5">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-4 border-b border-slate-800">
+                        <!-- Score Display -->
+                        <div class="flex items-center gap-5">
+                            <div class="w-24 h-24 rounded border border-slate-800 bg-slate-950 flex flex-col items-center justify-center font-mono">
+                                <span class="text-3xl font-extrabold text-white tabular-nums" id="gaugeScoreText">06</span>
+                                <span class="text-[10px] text-slate-400">/ 100 RISK</span>
+                                <svg class="hidden"><circle id="gaugeCircle" cx="0" cy="0" r="0"></circle></svg>
+                            </div>
+                            <div>
+                                <div class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Fraud Assessment</div>
+                                <div class="text-xl font-bold text-white tracking-tight" id="dashRiskTitle">LOW RISK</div>
+                                <div class="inline-flex items-center gap-1.5 mt-1 px-2 py-0.5 rounded text-xs font-medium bg-slate-900 border border-slate-700" id="attackTypeBadge">
+                                    <span class="text-slate-300">Classification:</span>
+                                    <span class="text-white font-semibold" id="attackTypeText">Authentic Credential</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Metadata -->
+                        <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-xs font-mono">
+                            <div><span class="text-slate-400">File:</span> <span id="dashDocName" class="text-white font-semibold">-</span></div>
+                            <div><span class="text-slate-400">Type:</span> <span id="dashDocTypeBadge" class="text-blue-400 font-semibold">-</span></div>
+                            <div><span class="text-slate-400">Size:</span> <span id="dashDocSize" class="text-slate-300">-</span></div>
+                            <div><span class="text-slate-400">SHA-256:</span> <span id="dashDocHash" class="text-slate-300">-</span></div>
+                        </div>
                     </div>
-                    <div id="docsTableWrapper" class="hidden overflow-x-auto">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Timestamp</th>
-                                    <th>Document</th>
-                                    <th>Triage Decision</th>
-                                    <th>Risk Score</th>
-                                    <th>Attack Type</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="docsTableBody"></tbody>
-                        </table>
+
+                    <!-- Visual Forensics: Document Scan & Biometric Comparison -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Left: Document & Splicing Analysis -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-bold text-slate-300 uppercase tracking-wider">Document Scan & Tamper Heatmap</span>
+                                <span id="dashTamperEdgeBadge" class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">Edge: Normal</span>
+                            </div>
+                            <div class="rounded border border-slate-800 bg-slate-950 h-64 overflow-hidden flex items-center justify-center">
+                                <img id="dashAnnotatedImg" src="" alt="Forensic Scan" class="h-full w-full object-contain">
+                            </div>
+                            <div class="flex justify-between text-[11px] text-slate-400 font-mono">
+                                <span>Noise Sigma: <strong id="dashNoiseSigma" class="text-white">0.0</strong></span>
+                                <span>Anomalous Regions: <strong id="dashSuspiciousCount" class="text-white">0</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Right: Biometric 1:1 Facial Match -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-bold text-slate-300 uppercase tracking-wider">1:1 Biometric Facial Comparison</span>
+                                <span id="dashFaceMatchBadge" class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">Match 96.8%</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 h-64">
+                                <div class="rounded border border-slate-800 bg-slate-950 flex flex-col p-2 items-center justify-center">
+                                    <span class="text-[10px] font-mono text-slate-400 mb-1">Credential Photo</span>
+                                    <div class="h-44 w-full flex items-center justify-center overflow-hidden rounded bg-slate-900">
+                                        <img id="dashDocFaceImg" src="" alt="Passport Portrait" class="h-full w-full object-cover">
+                                    </div>
+                                    <span id="dashFaceDetectedBadge" class="text-[10px] text-slate-400 mt-1">Detected</span>
+                                </div>
+                                <div class="rounded border border-slate-800 bg-slate-950 flex flex-col p-2 items-center justify-center">
+                                    <span class="text-[10px] font-mono text-slate-400 mb-1">Live Passenger Photo</span>
+                                    <div class="h-44 w-full flex items-center justify-center overflow-hidden rounded bg-slate-900">
+                                        <img id="dashLiveSelfieImg" src="" alt="Passenger Selfie" class="h-full w-full object-cover">
+                                    </div>
+                                    <span id="dashFaceCount" class="text-[10px] text-slate-400 mt-1">Single Face Verified</span>
+                                </div>
+                            </div>
+                            <div class="text-[11px] text-slate-400">
+                                Biometric algorithm: Normalized facial crop Haar extraction with Cosine distance verification.
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- ICAO 9303 Machine Readable Zone (MRZ) Inspection -->
+                    <div id="mrzPanel" class="p-3.5 rounded bg-slate-950 border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-mono font-bold text-slate-300">ICAO 9303 Doc 9303 Machine Readable Zone (Type 3 / 2x44)</span>
+                            <div class="flex gap-2 font-mono text-[10px]">
+                                <span id="mrzCheckDoc" class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">Doc No Checksum: OK</span>
+                                <span id="mrzCheckDOB" class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">DOB Checksum: OK</span>
+                                <span id="mrzCheckExp" class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">Exp Checksum: OK</span>
+                            </div>
+                        </div>
+                        <div class="font-mono text-xs bg-slate-900 p-2.5 rounded border border-slate-800 text-slate-200 tracking-widest space-y-1">
+                            <div id="mrzLine1">P&lt;UTOCHEN&lt;&lt;ALEXANDER&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+                            <div id="mrzLine2">P984210744UTO9408144M3108138&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;06</div>
+                        </div>
+                    </div>
+
+                    <!-- Watchlist & Security Clearance Record -->
+                    <div id="watchlistPanel" class="p-3.5 rounded bg-slate-950 border border-slate-800 space-y-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-300">Border Watchlist & Interpol SLTD Record Check</span>
+                            <span id="watchlistBadge" class="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">CLEAR</span>
+                        </div>
+                        <div class="flex items-center justify-between text-slate-400 font-mono text-[11px]">
+                            <span id="watchlistDetails">0 hits in active Interpol Stolen & Lost Travel Documents database.</span>
+                            <span>Travel Authorization: <strong id="travelAuthBadge" class="text-emerald-400">AUTHORIZED</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Extracted Text & Extracted Identity Attributes Table -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Extracted Credential Attributes</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs font-mono">
+                            <div class="p-2 rounded bg-slate-950 border border-slate-800">
+                                <span class="text-[10px] text-slate-400 block">Full Name</span>
+                                <span id="dashExtractedName" class="text-white font-semibold truncate block">-</span>
+                            </div>
+                            <div class="p-2 rounded bg-slate-950 border border-slate-800">
+                                <span class="text-[10px] text-slate-400 block">Doc Number</span>
+                                <span id="dashExtractedDocNo" class="text-white font-semibold truncate block">-</span>
+                            </div>
+                            <div class="p-2 rounded bg-slate-950 border border-slate-800">
+                                <span class="text-[10px] text-slate-400 block">Date of Birth</span>
+                                <span id="dashExtractedDOB" class="text-white font-semibold block">-</span>
+                            </div>
+                            <div class="p-2 rounded bg-slate-950 border border-slate-800">
+                                <span class="text-[10px] text-slate-400 block">Expiration</span>
+                                <span id="dashExtractedExpiry" class="text-white font-semibold block">-</span>
+                            </div>
+                            <div class="p-2 rounded bg-slate-950 border border-slate-800">
+                                <span class="text-[10px] text-slate-400 block">Nationality</span>
+                                <span id="dashExtractedNationality" class="text-white font-semibold block">-</span>
+                            </div>
+                            <div class="p-2 rounded bg-slate-950 border border-slate-800">
+                                <span class="text-[10px] text-slate-400 block">Authority</span>
+                                <span id="dashExtractedAuthority" class="text-white font-semibold truncate block">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Specific Diagnostic & Forensic Log -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Forensic Diagnostics & Inspection Notes</span>
+                        <div id="dashRiskReasons" class="space-y-1 text-xs"></div>
+                    </div>
+
+                    <!-- Interactive Forensic AI Officer Query Assistant -->
+                    <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-bold text-slate-300">Forensic Diagnostic Assistant</span>
+                            <span class="text-[10px] font-mono text-slate-500">Natural Language Audit Interface</span>
+                        </div>
+                        <div class="flex gap-2 text-xs">
+                            <input type="text" id="customAiQuery" placeholder="Ask specific question regarding this inspection (e.g., Why was the visa stamp flagged?)" class="flex-1 bg-slate-900 border border-slate-800 rounded px-3 py-2 text-white placeholder-slate-600 focus:border-blue-600 focus:outline-none">
+                            <button id="btnAskAi" type="button" class="px-4 py-2 rounded bg-blue-700 hover:bg-blue-600 text-white font-medium transition-colors">Query</button>
+                        </div>
+                        <div id="aiAnswerCard" class="hidden p-3 rounded bg-slate-900 border border-slate-800 text-xs text-slate-200 leading-relaxed font-mono">
+                            <span id="aiAnswerText"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- PERSISTENT INSPECTION LOG (AUDIT TRAIL)                         -->
+            <!-- ============================================================== -->
+            <div class="bg-[#0f172a] border border-slate-800 rounded p-5 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white">Station Audit Log & Historical Screening Repository</h3>
+                        <p class="text-xs text-slate-400">All submitted travel credentials, biometric comparisons, and triage actions logged in persistent database.</p>
+                    </div>
+                    <button type="button" onclick="loadUserDocuments()" class="px-3 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs transition-colors">
+                        Refresh Log
+                    </button>
+                </div>
+
+                <div id="docsTableContainer">
+                    <div id="noDocsMsg" class="py-10 text-center text-slate-500 text-xs">
+                        No inspection records logged in current session. Execute a verification or select a preloaded scenario above.
+                    </div>
+                    <div id="docsListGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
                 </div>
             </div>
 
@@ -434,116 +522,115 @@
 
     </main>
 
-    <!-- ============================================================== -->
-    <!-- MODAL: 24/7 CLOUD ACCESS & MOBILE SCANNER                      -->
-    <!-- ============================================================== -->
-    <div id="networkModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b0f17]/90">
-        <div class="panel p-6 max-w-lg w-full space-y-4">
-            <div class="flex items-start justify-between border-b border-[#26334d] pb-3">
-                <div>
-                    <h3 class="text-base font-bold text-white">24/7 Cloud Access & Mobile QR</h3>
-                    <p class="text-xs text-slate-400">Single permanent URL & mobile scanner</p>
-                </div>
-                <button id="closeNetworkModal" class="text-slate-400 hover:text-white font-mono text-sm">[X]</button>
+    <!-- Footer with Terms of Service & Privacy Policy (#26 & #27 Compliance) -->
+    <footer class="border-t border-slate-800 bg-[#0d1320] text-slate-400 text-xs mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-slate-300 font-bold">ID SHIELD</span>
+                <span>Security Classification: OFFICIAL / SENSITIVE</span>
+                <span>ICAO Annex 9 Protocol Compliant</span>
             </div>
-
-            <!-- QR Code Section -->
-            <div class="flex flex-col sm:flex-row items-center gap-4 p-4 rounded bg-[#0d1524] border border-[#26334d]">
-                <div class="p-1.5 bg-white rounded flex-shrink-0">
-                    <img id="networkQrImg" src="" alt="QR Code" class="w-28 h-28 object-contain">
-                </div>
-                <div class="space-y-1 text-center sm:text-left">
-                    <div class="text-xs font-bold text-white uppercase">Smartphone Camera Access</div>
-                    <p class="text-[11px] text-slate-400">
-                        Scan with your iPhone or Android camera to access this console remotely on cellular or outside networks.
-                    </p>
-                </div>
-            </div>
-
-            <!-- URL & Copy Section -->
-            <div class="space-y-2">
-                <label class="block text-[11px] font-bold text-slate-400 uppercase">Permanent Station URL</label>
-                <div class="flex items-center gap-2">
-                    <input id="publicUrlInput" type="text" readonly class="flex-1 bg-[#0b0f17] border border-[#26334d] rounded px-3 py-1.5 text-xs text-white font-mono focus:outline-none">
-                    <button id="copyPublicUrlBtn" class="px-3 py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition">
-                        Copy
-                    </button>
-                </div>
-                <div class="text-[10px] text-slate-500 font-mono">Runs 24/7 independently of host workstation status.</div>
-            </div>
-
-            <!-- Database Info -->
-            <div class="p-2.5 rounded bg-[#0d1524] border border-[#26334d] flex items-center justify-between text-xs">
-                <span class="text-slate-400">Database Engine:</span>
-                <span id="dbEngineText" class="font-mono text-slate-200 font-semibold">Cloud PostgreSQL / SQLite</span>
-            </div>
-
-            <div class="pt-2 border-t border-[#26334d] flex justify-end">
-                <button id="dismissNetworkModal" class="px-4 py-1.5 rounded bg-[#1e293b] hover:bg-[#283852] text-xs font-semibold text-white transition">
-                    Close
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================== -->
-    <!-- MODAL: TERMS OF SERVICE & OPERATIONAL PROTOCOLS                -->
-    <!-- ============================================================== -->
-    <div id="tosModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b0f17]/90">
-        <div class="panel p-6 max-w-xl w-full space-y-3">
-            <div class="flex items-start justify-between border-b border-[#26334d] pb-2">
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Terms of Service & Operational Protocols</h3>
-                <button onclick="toggleModal('tosModal', false)" class="text-slate-400 hover:text-white font-mono">[X]</button>
-            </div>
-            <div class="text-xs text-slate-300 space-y-2 max-h-72 overflow-y-auto leading-relaxed font-mono">
-                <p><strong>1. Authorization:</strong> Access to ID SHIELD is restricted to authorized border security personnel, immigration agents, and credential verification officers.</p>
-                <p><strong>2. Algorithmic Advisory:</strong> Triage ratings (CLEAR FOR ENTRY, SECONDARY INSPECTION, DETAIN & INVESTIGATE) are algorithmic decision-support tools. All final travel decisions rest with the primary inspecting officer.</p>
-                <p><strong>3. Compliance:</strong> All MRZ extractions adhere to ICAO Document 9303 specifications. Unauthorized duplication, dissemination, or reverse-engineering is strictly prohibited.</p>
-                <p><strong>4. Auditability:</strong> Every verification query is immutably logged with an audit hash and timestamp in compliance with border control directives.</p>
-            </div>
-            <div class="pt-2 border-t border-[#26334d] flex justify-end">
-                <button onclick="toggleModal('tosModal', false)" class="px-4 py-1.5 rounded bg-[#1e293b] hover:bg-[#283852] text-xs font-semibold text-white">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================== -->
-    <!-- MODAL: DATA PRIVACY & ICAO PII COMPLIANCE POLICY               -->
-    <!-- ============================================================== -->
-    <div id="privacyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b0f17]/90">
-        <div class="panel p-6 max-w-xl w-full space-y-3">
-            <div class="flex items-start justify-between border-b border-[#26334d] pb-2">
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Data Privacy & PII Handling Policy</h3>
-                <button onclick="toggleModal('privacyModal', false)" class="text-slate-400 hover:text-white font-mono">[X]</button>
-            </div>
-            <div class="text-xs text-slate-300 space-y-2 max-h-72 overflow-y-auto leading-relaxed font-mono">
-                <p><strong>1. PII Protection:</strong> Traveler biometric identifiers and Machine Readable Zone records are processed in memory and encrypted at rest in accordance with standard PII guidelines.</p>
-                <p><strong>2. Data Retention:</strong> Inspection logs are maintained exclusively for border security audit trails and forensic dispute resolution.</p>
-                <p><strong>3. Biometric Vectors:</strong> Live facial feature representations are utilized solely for instantaneous 1:1 cross-comparison against the credential portrait and are not transferred to commercial third parties.</p>
-            </div>
-            <div class="pt-2 border-t border-[#26334d] flex justify-end">
-                <button onclick="toggleModal('privacyModal', false)" class="px-4 py-1.5 rounded bg-[#1e293b] hover:bg-[#283852] text-xs font-semibold text-white">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Institutional Footer -->
-    <footer class="border-t border-[#26334d] bg-[#111827] py-4 mt-auto">
-        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400 font-mono">
-            <div>
-                <span>ID SHIELD • BORDER CONTROL & TRAVEL DOCUMENT SCREENING CONSOLE</span>
-            </div>
-            <div class="flex items-center gap-4">
-                <button onclick="toggleModal('tosModal', true)" class="hover:text-white underline">Terms of Service</button>
-                <span>•</span>
-                <button onclick="toggleModal('privacyModal', true)" class="hover:text-white underline">Privacy & PII Policy</button>
-                <span>•</span>
-                <span>ICAO DOC 9303 COMPLIANT</span>
+            <div class="flex items-center gap-4 text-[11px]">
+                <button type="button" onclick="openModal('tosModal')" class="hover:text-slate-200 transition-colors">Terms of Service</button>
+                <button type="button" onclick="openModal('privacyModal')" class="hover:text-slate-200 transition-colors">Privacy & Data Protection Policy</button>
+                <span>24/7 Cloud Host</span>
             </div>
         </div>
     </footer>
 
-    <!-- Application JavaScript -->
+    <!-- ============================================================== -->
+    <!-- MODAL: TERMS OF SERVICE (TOS) (#26 Compliance)                 -->
+    <!-- ============================================================== -->
+    <div id="tosModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070b13]/80">
+        <div class="bg-[#0f172a] border border-slate-700 rounded p-6 max-w-xl w-full space-y-4 text-xs">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Terms of Service (TOS)</h3>
+                <button onclick="closeModal('tosModal')" class="text-slate-400 hover:text-white">Close</button>
+            </div>
+            <div class="space-y-3 text-slate-300 leading-relaxed max-h-80 overflow-y-auto pr-2">
+                <p><strong>1. Authorization:</strong> ID SHIELD is licensed exclusively for authorized border security, immigration management, civil registration, and legitimate KYC compliance inspection.</p>
+                <p><strong>2. Evidentiary Use:</strong> Automated triage decisions (CLEAR, SECONDARY, DETAIN) serve as advisory intelligence for human border inspection officers. Physical detention requires human officer confirmation.</p>
+                <p><strong>3. Cryptographic Checksums:</strong> Machine Readable Zone calculations conform to ICAO Document 9303 Part 3 rules. System logs record all verification timestamps for judicial evidentiary integrity.</p>
+            </div>
+            <div class="pt-3 border-t border-slate-800 text-right">
+                <button onclick="closeModal('tosModal')" class="px-4 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-white font-medium">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL: PRIVACY & DATA PROTECTION POLICY (#27 Compliance)       -->
+    <!-- ============================================================== -->
+    <div id="privacyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070b13]/80">
+        <div class="bg-[#0f172a] border border-slate-700 rounded p-6 max-w-xl w-full space-y-4 text-xs">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Data Protection & Privacy Policy</h3>
+                <button onclick="closeModal('privacyModal')" class="text-slate-400 hover:text-white">Close</button>
+            </div>
+            <div class="space-y-3 text-slate-300 leading-relaxed max-h-80 overflow-y-auto pr-2">
+                <p><strong>1. Biometric Template Minimization:</strong> In accordance with ICAO Annex 9 and GDPR Article 9, biometric facial vector points generated during 1:1 matching are ephemeral and non-reconstructible into raw photographs.</p>
+                <p><strong>2. Zero Third-Party Telemetry:</strong> All forensic image processing, edge density calculations, and checksum verifications occur internally on isolated cloud processors. No identity data is transmitted to commercial advertising networks.</p>
+                <p><strong>3. Audit Trail Retention:</strong> Investigation records in the database persist solely for designated audit retention periods defined by jurisdiction regulations.</p>
+            </div>
+            <div class="pt-3 border-t border-slate-800 text-right">
+                <button onclick="closeModal('privacyModal')" class="px-4 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-white font-medium">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL: CONNECTIVITY & SMARTPHONE ACCESS                        -->
+    <!-- ============================================================== -->
+    <div id="networkModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070b13]/80">
+        <div class="bg-[#0f172a] border border-slate-700 rounded p-6 max-w-md w-full space-y-4 text-xs">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider">System Connectivity & Mobile Access</h3>
+                <button id="closeNetworkModal" class="text-slate-400 hover:text-white">Close</button>
+            </div>
+
+            <!-- QR Code Container -->
+            <div class="flex items-center gap-4 p-3.5 rounded bg-slate-950 border border-slate-800">
+                <div class="p-1.5 bg-white rounded flex-shrink-0">
+                    <img id="networkQrImg" src="" alt="Access QR Code" class="w-24 h-24 object-contain">
+                </div>
+                <div class="space-y-1 text-slate-300">
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800" id="publicTunnelBadge">24/7 ONLINE</span>
+                    <div class="font-bold text-white text-xs">Smartphone Scanner</div>
+                    <p class="text-[11px] text-slate-400">Scan code with any mobile device to open inspection terminal on any network.</p>
+                </div>
+            </div>
+
+            <!-- Single Permanent Cloud URL -->
+            <div class="space-y-1.5">
+                <label class="block text-slate-400 font-mono text-[11px]">Permanent Cloud Web Address</label>
+                <div class="flex gap-2">
+                    <input id="publicUrlInput" type="text" readonly value="" class="flex-1 bg-slate-950 border border-slate-800 rounded px-3 py-1.5 font-mono text-xs text-white focus:outline-none">
+                    <button id="copyPublicUrlBtn" class="px-3 py-1.5 rounded bg-blue-700 hover:bg-blue-600 text-white font-medium text-xs transition-colors">Copy</button>
+                </div>
+            </div>
+
+            <div class="p-2.5 rounded bg-slate-950 border border-slate-800 flex justify-between items-center text-[11px] font-mono">
+                <span class="text-slate-400">Database Engine:</span>
+                <span id="dbEngineText" class="text-slate-200">Cloud PostgreSQL / Persistent SQLite</span>
+            </div>
+
+            <div class="pt-2 border-t border-slate-800 text-right">
+                <button id="dismissNetworkModal" class="px-4 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
     <script src="/static/js/app.js"></script>
+    <script>
+        function openModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('hidden');
+        }
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
