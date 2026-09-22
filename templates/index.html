@@ -112,7 +112,7 @@
                     </div>
 
                     <!-- Auth Mode Toggle -->
-                    <div class="flex rounded-xl bg-slate-100 p-1 border border-slate-200 mb-6">
+                    <div class="flex rounded-xl bg-slate-100 p-1 border border-slate-200 mb-6" id="authModeToggle">
                         <button type="button" id="tabSignIn" class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all bg-blue-600 text-white shadow-sm">
                             Sign In
                         </button>
@@ -133,14 +133,17 @@
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Email Address</label>
                             <div class="relative">
                                 <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
-                                <input type="email" id="loginEmail" required placeholder="investigator@agency.gov" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                                <input type="email" id="loginEmail" required placeholder="Enter your email" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Password</label>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600">Password</label>
+                                <button type="button" id="btnShowForgot" class="text-xs text-blue-600 hover:text-blue-700 font-semibold hover:underline">Forgot password?</button>
+                            </div>
                             <div class="relative">
                                 <i data-lucide="key" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
-                                <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                                <input type="password" id="loginPassword" required placeholder="Enter your password" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                                 <button type="button" onclick="togglePasswordVisibility('loginPassword', this)" class="absolute right-3.5 top-3 text-slate-400 hover:text-blue-600 transition-colors focus:outline-none" title="Show/Hide Password">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                 </button>
@@ -158,14 +161,14 @@
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Full Name</label>
                             <div class="relative">
                                 <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
-                                <input type="text" id="regName" required placeholder="Officer Jane Doe" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                                <input type="text" id="regName" required placeholder="Enter your full name" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                             </div>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Email Address</label>
                             <div class="relative">
                                 <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
-                                <input type="email" id="regEmail" required placeholder="officer@agency.gov" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                                <input type="email" id="regEmail" required placeholder="Enter your email" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                             </div>
                         </div>
                         <div>
@@ -189,8 +192,47 @@
                             </div>
                         </div>
                         <button type="submit" class="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
-                            <span>Create Investigator Account</span>
+                            <span>Create Account</span>
                             <i data-lucide="user-plus" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+
+                    <!-- Reset Password Form -->
+                    <form id="resetPasswordForm" class="hidden space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Registered Email Address</label>
+                            <div class="relative">
+                                <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+                                <input type="email" id="resetEmail" required placeholder="Enter your email" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">New Password</label>
+                            <div class="relative">
+                                <i data-lucide="key" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+                                <input type="password" id="resetNewPassword" required placeholder="Enter new password" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                                <button type="button" onclick="togglePasswordVisibility('resetNewPassword', this)" class="absolute right-3.5 top-3 text-slate-400 hover:text-blue-600 transition-colors focus:outline-none" title="Show/Hide Password">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Confirm New Password</label>
+                            <div class="relative">
+                                <i data-lucide="check-circle" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+                                <input type="password" id="resetConfirmPassword" required placeholder="Confirm new password" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                                <button type="button" onclick="togglePasswordVisibility('resetConfirmPassword', this)" class="absolute right-3.5 top-3 text-slate-400 hover:text-blue-600 transition-colors focus:outline-none" title="Show/Hide Password">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
+                            <span>Reset Password</span>
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" id="btnBackToSignIn" class="w-full py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition">
+                            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+                            <span>Back to Sign In</span>
                         </button>
                     </form>
                 </div>
@@ -571,7 +613,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100">
                         <div>
                             <label class="block text-xs font-medium text-slate-600 mb-1">Claimed Full Name (Cross-Check)</label>
-                            <input type="text" id="enteredName" placeholder="e.g. ALEXANDER CHEN" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none">
+                            <input type="text" id="enteredName" placeholder="Enter full name" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-600 mb-1">Claimed Date of Birth</label>
@@ -579,7 +621,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-600 mb-1">Claimed ID / Passport Number</label>
-                            <input type="text" id="enteredIDNum" placeholder="e.g. P98421074" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none">
+                            <input type="text" id="enteredIDNum" placeholder="Enter document number" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none">
                         </div>
                     </div>
 

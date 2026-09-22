@@ -83,22 +83,51 @@ function setupAuthEvents() {
     const tabSignUp = document.getElementById('tabSignUp');
     const signInForm = document.getElementById('signInForm');
     const signUpForm = document.getElementById('signUpForm');
+    const resetPasswordForm = document.getElementById('resetPasswordForm');
+    const authModeToggle = document.getElementById('authModeToggle');
+    const btnShowForgot = document.getElementById('btnShowForgot');
+    const btnBackToSignIn = document.getElementById('btnBackToSignIn');
+    const authTitle = document.getElementById('authTitle');
+    const authSubtitle = document.getElementById('authSubtitle');
 
-    tabSignIn.addEventListener('click', () => {
+    const showSignInView = () => {
+        authTitle.textContent = "Sign In to ID Shield";
+        authSubtitle.textContent = "AI-Powered Identity Fraud Investigation & Border Verification";
+        if (authModeToggle) authModeToggle.classList.remove('hidden');
         tabSignIn.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all bg-blue-600 text-white shadow-sm";
         tabSignUp.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all";
         signInForm.classList.remove('hidden');
         signUpForm.classList.add('hidden');
+        if (resetPasswordForm) resetPasswordForm.classList.add('hidden');
         hideAlert();
-    });
+    };
 
-    tabSignUp.addEventListener('click', () => {
+    const showSignUpView = () => {
+        authTitle.textContent = "Sign In to ID Shield";
+        authSubtitle.textContent = "AI-Powered Identity Fraud Investigation & Border Verification";
+        if (authModeToggle) authModeToggle.classList.remove('hidden');
         tabSignUp.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all bg-blue-600 text-white shadow-sm";
         tabSignIn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all";
         signUpForm.classList.remove('hidden');
         signInForm.classList.add('hidden');
+        if (resetPasswordForm) resetPasswordForm.classList.add('hidden');
         hideAlert();
-    });
+    };
+
+    const showResetPasswordView = () => {
+        authTitle.textContent = "Reset Password";
+        authSubtitle.textContent = "Enter your registered email and choose a new password";
+        if (authModeToggle) authModeToggle.classList.add('hidden');
+        signInForm.classList.add('hidden');
+        signUpForm.classList.add('hidden');
+        if (resetPasswordForm) resetPasswordForm.classList.remove('hidden');
+        hideAlert();
+    };
+
+    tabSignIn.addEventListener('click', showSignInView);
+    tabSignUp.addEventListener('click', showSignUpView);
+    if (btnShowForgot) btnShowForgot.addEventListener('click', showResetPasswordView);
+    if (btnBackToSignIn) btnBackToSignIn.addEventListener('click', showSignInView);
 
     signInForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -154,6 +183,49 @@ function setupAuthEvents() {
             showAlert("Connection error. Please try again.", "error");
         }
     });
+
+    if (resetPasswordForm) {
+        resetPasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+            const email = document.getElementById('resetEmail').value.trim();
+            const newPassword = document.getElementById('resetNewPassword').value;
+            const confirmPassword = document.getElementById('resetConfirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                showAlert("New passwords do not match.", "error");
+                return;
+            }
+
+            if (newPassword.length < 4) {
+                showAlert("Password must be at least 4 characters.", "error");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/reset-password', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ email, new_password: newPassword })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showAlert(data.message, "success");
+                    document.getElementById('loginEmail').value = email;
+                    document.getElementById('resetNewPassword').value = '';
+                    document.getElementById('resetConfirmPassword').value = '';
+                    setTimeout(() => {
+                        showSignInView();
+                        showAlert("Password reset successfully! Please sign in.", "success");
+                    }, 1200);
+                } else {
+                    showAlert(data.message, "error");
+                }
+            } catch (err) {
+                showAlert("Connection error. Please try again.", "error");
+            }
+        });
+    }
 }
 
 function showAlert(message, type = "info") {

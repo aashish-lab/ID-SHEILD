@@ -203,6 +203,32 @@ def get_user_by_id(user_id):
         return dict(user)
     return None
 
+def reset_user_password(email, new_password):
+    email = email.strip().lower()
+    if not email or not new_password:
+        return False, "Email and new password are required."
+
+    conn = get_db()
+    cursor = conn.cursor()
+    try:
+        q = _format_query("SELECT id FROM users WHERE email = ?")
+        cursor.execute(q, (email,))
+        user = cursor.fetchone()
+        if not user:
+            return False, "No account found with this email address."
+
+        password_hash = generate_password_hash(new_password)
+        update_q = _format_query("UPDATE users SET password_hash = ? WHERE email = ?")
+        cursor.execute(update_q, (password_hash, email))
+        conn.commit()
+        return True, "Password reset successfully! Please sign in."
+    except Exception as e:
+        if IS_POSTGRES:
+            conn.rollback()
+        return False, f"Failed to reset password: {str(e)}"
+    finally:
+        conn.close()
+
 def save_document(doc_data):
     conn = get_db()
     cursor = conn.cursor()

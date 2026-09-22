@@ -79,6 +79,24 @@ def login():
         "user": result
     })
 
+@app.route("/api/reset-password", methods=["POST"])
+def reset_password():
+    data = request.get_json() or {}
+    email = data.get("email", "").strip()
+    new_password = data.get("new_password", "").strip()
+
+    if not email or not new_password:
+        return jsonify({"success": False, "message": "Email and new password are required."}), 400
+
+    if len(new_password) < 4:
+        return jsonify({"success": False, "message": "Password should be at least 4 characters long."}), 400
+
+    success, message = database.reset_user_password(email, new_password)
+    if not success:
+        return jsonify({"success": False, "message": message}), 400
+
+    return jsonify({"success": True, "message": message})
+
 @app.route("/api/logout", methods=["POST"])
 def logout():
     session.clear()
