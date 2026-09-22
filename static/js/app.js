@@ -1,7 +1,8 @@
 /**
- * ID SHIELD - Frontend Investigation Application Logic
- * Supports Multi-Modal Upload, 3 Demo Cases, "Ask the AI" Assistant,
- * Circular Risk Gauge, and Forensic Audit Repository.
+ * ID SHIELD - Enterprise Frontend Investigation Application Logic
+ * Matches Modern Enterprise Identity SaaS Theme (Stripe/Persona/Onfido style)
+ * Supports Multi-Modal Upload, 1-Click Test Scenarios, "Ask the AI" Assistant,
+ * Circular Biometric/Risk Gauge, and Audit Repository.
  */
 
 let currentUser = null;
@@ -47,9 +48,9 @@ function setAuthenticatedState(user) {
     
     const navAuth = document.getElementById('navAuthArea');
     navAuth.innerHTML = `
-        <div class="flex items-center gap-3">
-            <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-                <div class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-[11px]">
+        <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs">
+                <div class="w-6 h-6 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-[11px]">
                     ${(user.name || 'U').charAt(0).toUpperCase()}
                 </div>
                 <div class="hidden sm:block text-left">
@@ -57,7 +58,7 @@ function setAuthenticatedState(user) {
                     <div class="text-[10px] text-slate-400 leading-tight">Investigator</div>
                 </div>
             </div>
-            <button onclick="handleLogout()" class="py-1.5 px-3 rounded-xl bg-slate-900 hover:bg-rose-950/40 border border-slate-800 hover:border-rose-800 text-slate-300 hover:text-rose-400 text-xs font-medium transition-all flex items-center gap-1.5">
+            <button onclick="handleLogout()" class="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-rose-900/40 border border-slate-700 hover:border-rose-600 text-slate-300 hover:text-rose-300 text-xs font-medium transition-all flex items-center gap-1.5" title="Sign Out">
                 <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
                 <span class="hidden sm:inline">Sign Out</span>
             </button>
@@ -73,7 +74,7 @@ function setUnauthenticatedState() {
     document.getElementById('authSection').classList.remove('hidden');
     
     const navAuth = document.getElementById('navAuthArea');
-    navAuth.innerHTML = `<span class="text-xs text-slate-400">Not signed in</span>`;
+    navAuth.innerHTML = `<span class="text-xs text-slate-400 font-medium">Not signed in</span>`;
     initLucide();
 }
 
@@ -84,16 +85,16 @@ function setupAuthEvents() {
     const signUpForm = document.getElementById('signUpForm');
 
     tabSignIn.addEventListener('click', () => {
-        tabSignIn.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-md";
-        tabSignUp.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all";
+        tabSignIn.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all bg-blue-600 text-white shadow-sm";
+        tabSignUp.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all";
         signInForm.classList.remove('hidden');
         signUpForm.classList.add('hidden');
         hideAlert();
     });
 
     tabSignUp.addEventListener('click', () => {
-        tabSignUp.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-md";
-        tabSignIn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all";
+        tabSignUp.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all bg-blue-600 text-white shadow-sm";
+        tabSignIn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all";
         signUpForm.classList.remove('hidden');
         signInForm.classList.add('hidden');
         hideAlert();
@@ -158,14 +159,14 @@ function setupAuthEvents() {
 function showAlert(message, type = "info") {
     const alertBox = document.getElementById('authAlert');
     const alertText = document.getElementById('authAlertText');
-    alertBox.classList.remove('hidden', 'bg-rose-950/60', 'border-rose-800', 'text-rose-300', 'bg-emerald-950/60', 'border-emerald-800', 'text-emerald-300', 'bg-cyan-950/60', 'border-cyan-800', 'text-cyan-300');
+    alertBox.className = "mb-4 p-3.5 rounded-xl text-sm border flex items-start gap-2.5";
     
     if (type === 'error') {
-        alertBox.classList.add('bg-rose-950/60', 'border-rose-800', 'text-rose-300');
+        alertBox.classList.add('bg-rose-50', 'border-rose-200', 'text-rose-700');
     } else if (type === 'success') {
-        alertBox.classList.add('bg-emerald-950/60', 'border-emerald-800', 'text-emerald-300');
+        alertBox.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
     } else {
-        alertBox.classList.add('bg-cyan-950/60', 'border-cyan-800', 'text-cyan-300');
+        alertBox.classList.add('bg-blue-50', 'border-blue-200', 'text-blue-700');
     }
     
     alertText.textContent = message;
@@ -238,11 +239,16 @@ function setupFileInput(zoneId, inputId, labelId) {
     const label = document.getElementById(labelId);
 
     zone.addEventListener('click', () => input.click());
-    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('border-cyan-400'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('border-cyan-400'));
+    zone.addEventListener('dragover', (e) => { 
+        e.preventDefault(); 
+        zone.classList.add('border-blue-500', 'bg-blue-50/40'); 
+    });
+    zone.addEventListener('dragleave', () => {
+        zone.classList.remove('border-blue-500', 'bg-blue-50/40');
+    });
     zone.addEventListener('drop', (e) => {
         e.preventDefault();
-        zone.classList.remove('border-cyan-400');
+        zone.classList.remove('border-blue-500', 'bg-blue-50/40');
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             input.files = e.dataTransfer.files;
             label.textContent = e.dataTransfer.files[0].name;
@@ -255,7 +261,7 @@ function setupFileInput(zoneId, inputId, labelId) {
     });
 }
 
-// 1-Click Screening Scenarios (Border & KYC)
+// 1-Click Verification Test Scenarios (Border & KYC)
 async function triggerDemoCase(caseId) {
     const formData = new FormData();
     formData.append('sample_case', caseId);
@@ -307,7 +313,7 @@ async function executePipeline(formData, displayName) {
             return;
         }
 
-        updateBar(100, "5. Fraud Intelligence Synthesis Complete! Saved to SQLite.");
+        updateBar(100, "5. Fraud Intelligence Synthesis Complete! Saved to Database.");
         await sleep(300);
         progressCard.classList.add('hidden');
 
@@ -327,7 +333,7 @@ function sleep(ms) {
 }
 
 // -------------------------------------------------------------
-// 3. RENDER INVESTIGATOR DASHBOARD (MATCHING INFOGRAPHIC)
+// 3. RENDER INVESTIGATOR DASHBOARD (THEME 3 SAAS STYLE)
 // -------------------------------------------------------------
 
 function renderInvestigatorDashboard(data) {
@@ -347,19 +353,19 @@ function renderInvestigatorDashboard(data) {
     const triageBox = document.getElementById('triageIconBox');
 
     if (triage === "CLEAR FOR ENTRY") {
-        triageBanner.className = "p-5 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl bg-emerald-950/60 border-emerald-700/60 text-emerald-300";
-        triageBox.className = "w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-xl font-black shadow-inner";
-        triageTitle.innerHTML = `<span>CLEAR FOR ENTRY</span> <i data-lucide="check-circle" class="w-6 h-6 text-emerald-400"></i>`;
+        triageBanner.className = "p-5 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm bg-emerald-50 border-emerald-200 text-emerald-900";
+        triageBox.className = "w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-300 flex items-center justify-center text-xl font-bold";
+        triageTitle.innerHTML = `<span>CLEAR FOR ENTRY</span> <i data-lucide="check-circle" class="w-6 h-6 text-emerald-700"></i>`;
         triageSubtitle.textContent = "Automated e-Gate clearance authorized. 0 Watchlist records found. 1:1 facial biometric match confirmed.";
     } else if (triage === "SECONDARY INSPECTION") {
-        triageBanner.className = "p-5 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl bg-amber-950/60 border-amber-700/60 text-amber-300";
-        triageBox.className = "w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center text-xl font-black shadow-inner";
-        triageTitle.innerHTML = `<span>SECONDARY INSPECTION</span> <i data-lucide="alert-circle" class="w-6 h-6 text-amber-400"></i>`;
+        triageBanner.className = "p-5 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm bg-amber-50 border-amber-200 text-amber-900";
+        triageBox.className = "w-12 h-12 rounded-xl bg-amber-100 text-amber-700 border border-amber-300 flex items-center justify-center text-xl font-bold";
+        triageTitle.innerHTML = `<span>SECONDARY INSPECTION</span> <i data-lucide="alert-circle" class="w-6 h-6 text-amber-700"></i>`;
         triageSubtitle.textContent = "Manual inspection required. Border control officer interview recommended due to borderline data correlation.";
     } else {
-        triageBanner.className = "p-5 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl bg-rose-950/70 border-rose-700/70 text-rose-300";
-        triageBox.className = "w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-xl font-black shadow-inner";
-        triageTitle.innerHTML = `<span>DETAIN & INVESTIGATE</span> <i data-lucide="shield-alert" class="w-6 h-6 text-rose-400"></i>`;
+        triageBanner.className = "p-5 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm bg-rose-50 border-rose-200 text-rose-900";
+        triageBox.className = "w-12 h-12 rounded-xl bg-rose-100 text-rose-700 border border-rose-300 flex items-center justify-center text-xl font-bold";
+        triageTitle.innerHTML = `<span>DETAIN & INVESTIGATE</span> <i data-lucide="shield-alert" class="w-6 h-6 text-rose-700"></i>`;
         triageSubtitle.textContent = "CRITICAL BORDER ALERT: Credential forgery, modified DOB, tampered visa stamp, or Watchlist/Interpol hit.";
     }
 
@@ -375,54 +381,54 @@ function renderInvestigatorDashboard(data) {
     const attackText = document.getElementById('attackTypeText');
 
     if (score <= 30) {
-        circle.style.stroke = '#10b981'; // Green
+        circle.style.stroke = '#16a34a'; // Emerald 600
         riskTitle.textContent = "LOW RISK";
-        riskTitle.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-400";
-        attackBadge.className = "inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full text-xs font-bold border bg-emerald-950 text-emerald-300 border-emerald-800";
+        riskTitle.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-600";
+        attackBadge.className = "inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200";
     } else if (score <= 70) {
-        circle.style.stroke = '#f59e0b'; // Amber
+        circle.style.stroke = '#d97706'; // Amber 600
         riskTitle.textContent = "MANUAL REVIEW";
-        riskTitle.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-amber-400";
-        attackBadge.className = "inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full text-xs font-bold border bg-amber-950 text-amber-300 border-amber-800";
+        riskTitle.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-amber-600";
+        attackBadge.className = "inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full text-xs font-semibold border bg-amber-50 text-amber-700 border-amber-200";
     } else {
-        circle.style.stroke = '#ef4444'; // Red
+        circle.style.stroke = '#dc2626'; // Rose 600
         riskTitle.textContent = "HIGH RISK";
-        riskTitle.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-rose-400";
-        attackBadge.className = "inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full text-xs font-bold border bg-rose-950 text-rose-300 border-rose-800";
+        riskTitle.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-rose-600";
+        attackBadge.className = "inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full text-xs font-semibold border bg-rose-50 text-rose-700 border-rose-200";
     }
 
-    attackText.textContent = data.attack_type || "Attack Classification Pending";
+    attackText.textContent = data.attack_type || "Authentic Document";
 
-    // 3. Analysis Checklist (from Infographic)
+    // 3. Analysis Checklist
     document.getElementById('dashOcrScore').textContent = `${ocr.ocr_confidence || 95}%`;
     document.getElementById('dashDocStructure').textContent = "Normal";
 
     const forensicsEl = document.getElementById('dashForensics');
     if (tamper.tamper_edge_splicing_detected || tamper.tampered_visa_stamp_detected || tamper.modified_dob_detected) {
         forensicsEl.textContent = "Suspicious (Spliced)";
-        forensicsEl.className = "font-bold text-rose-400";
+        forensicsEl.className = "font-bold text-rose-600";
     } else {
         forensicsEl.textContent = "Passed";
-        forensicsEl.className = "font-bold text-emerald-400";
+        forensicsEl.className = "font-bold text-emerald-600";
     }
 
     const faceMatchEl = document.getElementById('dashFaceMatch');
     const sim = data.face_similarity_score;
     if (sim !== null && sim !== undefined && sim > 0) {
         faceMatchEl.textContent = `${sim}%`;
-        faceMatchEl.className = sim >= 70 ? "font-bold text-emerald-400" : "font-bold text-rose-400";
+        faceMatchEl.className = sim >= 70 ? "font-bold text-emerald-600" : "font-bold text-rose-600";
     } else {
         faceMatchEl.textContent = data.face_count === 1 ? "1 Face (Doc)" : "None";
-        faceMatchEl.className = "font-bold text-slate-300";
+        faceMatchEl.className = "font-bold text-slate-700";
     }
 
     const livenessEl = document.getElementById('dashLiveness');
     livenessEl.textContent = data.liveness_status || "Normal";
-    livenessEl.className = data.liveness_status === "PASS" ? "font-bold text-emerald-400" : "font-bold text-amber-400";
+    livenessEl.className = data.liveness_status === "PASS" ? "font-bold text-emerald-600" : "font-bold text-amber-600";
 
     const consistencyEl = document.getElementById('dashConsistency');
     consistencyEl.textContent = data.cross_field_status === "PASS" ? "Normal (Match)" : "Conflict";
-    consistencyEl.className = data.cross_field_status === "PASS" ? "font-bold text-emerald-400" : "font-bold text-rose-400";
+    consistencyEl.className = data.cross_field_status === "PASS" ? "font-bold text-emerald-600" : "font-bold text-rose-600";
 
     // 4. Extracted Travel Credential & MRZ Forensic Card
     document.getElementById('tbDocType').textContent = ocr.document_type || "Passport";
@@ -436,10 +442,10 @@ function renderInvestigatorDashboard(data) {
     const authEl = document.getElementById('dashTravelAuthBadge');
     if (val.travel_authorization && val.travel_authorization.includes("APPROVED")) {
         authEl.textContent = `TRAVEL AUTHORIZATION: ${val.travel_authorization}`;
-        authEl.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800";
+        authEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 self-start sm:self-auto";
     } else {
         authEl.textContent = `TRAVEL AUTHORIZATION: ${val.travel_authorization || 'REVOKED'}`;
-        authEl.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-950 text-rose-300 border border-rose-800";
+        authEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 self-start sm:self-auto";
     }
 
     // MRZ Lines & Checksum
@@ -451,10 +457,10 @@ function renderInvestigatorDashboard(data) {
         const mrzBadge = document.getElementById('mrzChecksumBadge');
         if (tamper.tamper_edge_splicing_detected || (ocr.document_number && ocr.document_number.includes("FORGED"))) {
             mrzBadge.textContent = "CHECKSUM: MISMATCH / FORGED";
-            mrzBadge.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-950 text-rose-400 border border-rose-800";
+            mrzBadge.className = "px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-rose-50 text-rose-700 border border-rose-200";
         } else {
             mrzBadge.textContent = "CHECKSUM: VALID (ICAO 9303)";
-            mrzBadge.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950 text-emerald-400 border border-emerald-800";
+            mrzBadge.className = "px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200";
         }
     } else {
         mrzBox.classList.add('hidden');
@@ -464,20 +470,20 @@ function renderInvestigatorDashboard(data) {
     const wlEl = document.getElementById('tbWatchlistStatus');
     if (val.is_blacklisted) {
         wlEl.textContent = `ALERT: ${val.blacklist_reason || 'INTERPOL HIT'}`;
-        wlEl.className = "font-bold text-rose-400";
+        wlEl.className = "font-bold text-rose-600";
     } else {
         wlEl.textContent = "CLEAR (0 HITS)";
-        wlEl.className = "font-bold text-emerald-400";
+        wlEl.className = "font-bold text-emerald-600";
     }
 
     // Visa Stamp Status
     const stampEl = document.getElementById('tbVisaStampStatus');
     if (tamper.tampered_visa_stamp_detected || (ocr.visa_stamp_status && ocr.visa_stamp_status.includes("Tampered"))) {
         stampEl.textContent = "TAMPERED / DISTORTED SEAL";
-        stampEl.className = "font-bold text-rose-400";
+        stampEl.className = "font-bold text-rose-600";
     } else {
         stampEl.textContent = "AUTHENTIC SEAL";
-        stampEl.className = "font-bold text-emerald-400";
+        stampEl.className = "font-bold text-emerald-600";
     }
 
     // 5. Visual Forensic Evidence Images
@@ -494,25 +500,24 @@ function renderInvestigatorDashboard(data) {
         liveSelfieImg.src = `/uploads/${data.selfie_filename}`;
         liveSelfieImg.parentElement.classList.remove('hidden');
         biometricText.textContent = `Face Similarity: ${sim || 50}%`;
-        biometricText.className = (sim && sim >= 70) ? "text-emerald-400 font-bold text-[11px]" : "text-rose-400 font-bold text-[11px]";
+        biometricText.className = (sim && sim >= 70) ? "text-emerald-600 font-bold text-xs" : "text-rose-600 font-bold text-xs";
     } else {
         liveSelfieImg.src = `/uploads/${data.annotated_filename || data.filename}`;
         biometricText.textContent = "No Live Traveler Photo (Doc Portrait Only)";
-        biometricText.className = "text-slate-400 font-medium text-[11px]";
+        biometricText.className = "text-slate-500 font-medium text-xs";
     }
 
     // 6. Reset AI Assistant with default summary
     const aiLog = data.ai_investigation_log || {};
     const answerContent = document.getElementById('aiAnswerContent');
-    const reasonsBullets = (aiLog.key_reasons || []).map(r => `[NOTE] ${r}`).join('<br>');
-    if (answerContent) {
-        answerContent.innerHTML = `
-            <strong class="text-white">${aiLog.summary || "Inspection summary generated."}</strong><br>
-            <div class="mt-2 text-slate-400">${reasonsBullets}</div>
-            <div class="mt-2 text-blue-400 font-mono"><strong>Triage Action:</strong> ${aiLog.recommended_action || "Standard review."}</div>
-        `;
-    }
+    const reasonsBullets = (aiLog.key_reasons || []).map(r => `• ${r}`).join('<br>');
+    answerContent.innerHTML = `
+        <strong class="text-slate-900 font-bold">${aiLog.summary || "Investigation summary generated."}</strong><br>
+        <div class="mt-2 text-slate-600">${reasonsBullets}</div>
+        <div class="mt-2 text-blue-700 font-semibold"><strong>Border Action:</strong> ${aiLog.recommended_action || "Standard clearance approved."}</div>
+    `;
 
+    initLucide();
     card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -527,7 +532,7 @@ async function askAiQuestion(question) {
     }
 
     const answerBox = document.getElementById('aiAnswerContent');
-    answerBox.innerHTML = `<span class="text-cyan-400 animate-pulse font-mono">AI Reasoning Engine analyzing forensic artifacts...</span>`;
+    answerBox.innerHTML = `<span class="text-blue-600 animate-pulse font-medium">AI Reasoning Engine analyzing forensic artifacts...</span>`;
 
     try {
         const res = await fetch('/api/ask-ai', {
@@ -538,7 +543,7 @@ async function askAiQuestion(question) {
         const data = await res.json();
         if (data.success) {
             // Render markdown formatted text with linebreaks
-            answerBox.innerHTML = data.answer.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>');
+            answerBox.innerHTML = data.answer.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900">$1</strong>');
         } else {
             answerBox.textContent = data.message;
         }
@@ -556,7 +561,7 @@ function handleCustomAiQuery() {
 }
 
 // -------------------------------------------------------------
-// 5. USER AUDIT TRAIL REPOSITORY (SQLITE)
+// 5. USER AUDIT TRAIL REPOSITORY (DATABASE)
 // -------------------------------------------------------------
 
 async function loadUserDocuments() {
@@ -577,42 +582,42 @@ async function loadUserDocuments() {
         grid.innerHTML = '';
 
         data.documents.forEach(doc => {
-            let badgeCls = "bg-emerald-950 text-emerald-400 border-emerald-800";
-            if (doc.risk_level === 'Review') badgeCls = "bg-amber-950 text-amber-400 border-amber-800";
-            if (doc.risk_level === 'High Risk') badgeCls = "bg-rose-950 text-rose-400 border-rose-800";
+            let badgeCls = "bg-emerald-50 text-emerald-700 border-emerald-200";
+            if (doc.risk_level === 'Review') badgeCls = "bg-amber-50 text-amber-700 border-amber-200";
+            if (doc.risk_level === 'High Risk') badgeCls = "bg-rose-50 text-rose-700 border-rose-200";
 
             const item = document.createElement('div');
-            item.className = "p-4 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-3";
+            item.className = "p-4 rounded-2xl bg-white border border-slate-200 hover:border-blue-400 hover:shadow-md transition-all flex flex-col justify-between space-y-3";
             item.innerHTML = `
                 <div>
                     <div class="flex items-center justify-between gap-2 mb-2">
-                        <span class="text-xs font-bold text-white truncate flex-1" title="${doc.original_name}">${doc.original_name}</span>
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeCls}">${doc.risk_level}</span>
+                        <span class="text-xs font-bold text-slate-900 truncate flex-1" title="${doc.original_name}">${doc.original_name}</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeCls}">${doc.risk_level}</span>
                     </div>
-                    <div class="rounded-xl overflow-hidden bg-slate-900 border border-slate-800 h-28 flex items-center justify-center mb-2">
+                    <div class="rounded-xl overflow-hidden bg-slate-50 border border-slate-200 h-28 flex items-center justify-center mb-2">
                         <img src="/uploads/${doc.annotated_filename || doc.filename}" alt="${doc.original_name}" class="h-full w-full object-cover">
                     </div>
-                    <div class="text-[11px] text-slate-400 space-y-1">
+                    <div class="text-[11px] text-slate-500 space-y-1">
                         <div class="flex justify-between">
                             <span>Score:</span>
-                            <span class="font-mono text-white font-semibold">${doc.risk_score}/100</span>
+                            <span class="font-mono text-slate-900 font-bold">${doc.risk_score}/100</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>Attack:</span>
-                            <span class="text-cyan-300 font-medium">${doc.attack_type || 'None'}</span>
+                            <span>Classification:</span>
+                            <span class="text-blue-700 font-medium">${doc.attack_type || 'Authentic'}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>Date:</span>
-                            <span class="text-slate-500">${doc.uploaded_at}</span>
+                            <span>Logged:</span>
+                            <span class="text-slate-400">${doc.uploaded_at}</span>
                         </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 pt-2 border-t border-slate-800/80">
-                    <button onclick='viewSavedDoc(${JSON.stringify(doc).replace(/'/g, "&apos;")})' class="flex-1 py-1.5 px-2 rounded-lg bg-cyan-950 hover:bg-cyan-900 text-cyan-300 text-xs font-semibold flex items-center justify-center gap-1 border border-cyan-800/60 transition-colors">
+                <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                    <button onclick='viewSavedDoc(${JSON.stringify(doc).replace(/'/g, "&apos;")})' class="flex-1 py-1.5 px-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold flex items-center justify-center gap-1 border border-blue-200 transition-colors">
                         <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                         <span>Inspect</span>
                     </button>
-                    <button onclick="deleteSavedDoc(${doc.id})" class="p-1.5 rounded-lg bg-slate-900 hover:bg-rose-950/60 text-slate-400 hover:text-rose-400 text-xs border border-slate-800 hover:border-rose-800 transition-colors" title="Delete record">
+                    <button onclick="deleteSavedDoc(${doc.id})" class="p-1.5 rounded-lg bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 text-xs border border-slate-200 hover:border-rose-200 transition-colors" title="Delete record">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
@@ -632,7 +637,7 @@ function viewSavedDoc(doc) {
 }
 
 async function deleteSavedDoc(docId) {
-    if (!confirm("Delete this investigation record from SQLite?")) return;
+    if (!confirm("Delete this investigation record?")) return;
     try {
         const res = await fetch(`/api/documents/${docId}`, { method: 'DELETE' });
         const data = await res.json();
@@ -656,10 +661,10 @@ function togglePasswordVisibility(inputId, btnElement) {
 
     if (input.type === 'password') {
         input.type = 'text';
-        btnElement.innerHTML = '<i data-lucide="eye-off" class="w-4 h-4 text-cyan-400"></i>';
+        btnElement.innerHTML = '<i data-lucide="eye-off" class="w-4 h-4 text-blue-600"></i>';
     } else {
         input.type = 'password';
-        btnElement.innerHTML = '<i data-lucide="eye" class="w-4 h-4 text-slate-500 hover:text-cyan-400"></i>';
+        btnElement.innerHTML = '<i data-lucide="eye" class="w-4 h-4 text-slate-400 hover:text-blue-600"></i>';
     }
     initLucide();
 }
@@ -707,7 +712,7 @@ function setupNetworkModal() {
             try {
                 await navigator.clipboard.writeText(val);
                 const orig = copyPublicBtn.innerHTML;
-                copyPublicBtn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> Copied!';
+                copyPublicBtn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Copied!';
                 initLucide();
                 setTimeout(() => {
                     copyPublicBtn.innerHTML = orig;
@@ -722,7 +727,7 @@ function setupNetworkModal() {
 
     async function refreshNetworkInfo() {
         try {
-            // Default to current browser origin (permanent cloud URL)
+            // Default to current browser origin
             let targetUrl = window.location.origin;
 
             const res = await fetch('/api/network-info');
@@ -738,7 +743,7 @@ function setupNetworkModal() {
                 }
 
                 if (badge) {
-                    badge.className = "text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30";
+                    badge.className = "text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200";
                     badge.textContent = net.is_cloud ? "24/7 CLOUD LIVE" : "ONLINE";
                 }
             }
@@ -760,5 +765,3 @@ function setupNetworkModal() {
 
     refreshNetworkInfo();
 }
-
-

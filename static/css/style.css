@@ -1,96 +1,124 @@
-/* ID SHIELD - Enterprise Border Control & Verification System Stylesheet */
-/* Clean, institutional, high-contrast, zero-gimmick styling */
+/* ID SHIELD - Enterprise Identity SaaS Styling (Stripe & Persona Style) */
 
 :root {
-    --bg-primary: #0a0e17;
-    --bg-surface: #111726;
-    --bg-surface-elevated: #162032;
-    --border-subtle: #1f293d;
-    --border-medium: #2e3d5b;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+    --border-subtle: #e2e8f0;
+    --primary-blue: #2563eb;
+    --primary-hover: #1d4ed8;
+    --text-heading: #0f172a;
+    --text-body: #334155;
     --text-muted: #64748b;
-    --accent-blue: #2563eb;
-    --status-green: #059669;
-    --status-amber: #d97706;
-    --status-red: #dc2626;
+    --success-green: #16a34a;
+    --warning-amber: #d97706;
+    --danger-red: #dc2626;
 }
 
 body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: var(--bg-main);
+    color: var(--text-body);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Tabular numbers for accurate metric reads */
-.tabular-nums {
-    font-variant-numeric: tabular-nums;
-}
-
-/* Institutional Scrollbar */
+/* Custom Clean Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #0a0e17;
+    background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-    background: #23304a;
-    border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #334668;
-}
-
-/* Standard Operational Cards */
-.panel-card {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
+    background: #cbd5e1;
     border-radius: 4px;
 }
-
-/* Skeleton Loading Elements (#21 Compliance) */
-@keyframes skeletonShimmer {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
-.skeleton-box {
-    background: linear-gradient(90deg, #162032 25%, #23304a 50%, #162032 75%);
-    background-size: 200% 100%;
-    animation: skeletonShimmer 1.5s infinite;
-    border-radius: 3px;
+/* Enterprise SaaS Card Utilities */
+.enterprise-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease-in-out;
 }
 
-/* Active Drag & Drop State */
+.enterprise-card:hover {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+}
+
+.enterprise-card-elevated {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.5rem;
+    box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.08);
+}
+
+/* Drag and Drop Active State */
 .drag-active {
-    border-color: var(--accent-blue) !important;
-    background-color: rgba(37, 99, 235, 0.06) !important;
+    border-color: #2563eb !important;
+    background-color: #eff6ff !important;
 }
 
-/* Strict Decision Banners */
-.triage-banner-clear {
-    background-color: #064e3b;
-    border: 1px solid #059669;
-    color: #ecfdf5;
+/* Circular Biometric Gauge */
+.circular-chart {
+    display: block;
+    margin: 0 auto;
+    max-width: 130px;
+    max-height: 130px;
 }
 
-.triage-banner-secondary {
-    background-color: #78350f;
-    border: 1px solid #d97706;
-    color: #fffbeb;
+.circle-bg {
+    fill: none;
+    stroke: #e2e8f0;
+    stroke-width: 3.2;
 }
 
-.triage-banner-detain {
-    background-color: #7f1d1d;
-    border: 1px solid #dc2626;
-    color: #fef2f2;
+.circle {
+    fill: none;
+    stroke-width: 3.6;
+    stroke-linecap: round;
+    stroke: #2563eb;
+    transition: stroke-dasharray 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Status Banners */
+.risk-low-banner {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #166534;
+}
+
+.risk-review-banner {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.risk-high-banner {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+/* Smooth Interactive Pills */
+.status-pill-approved {
+    background: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.status-pill-detain {
+    background: #dc2626;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+.status-pill-secondary {
+    background: #d97706;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
 }
