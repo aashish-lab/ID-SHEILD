@@ -76,7 +76,6 @@
                 <!-- Navigation Tabs -->
                 <nav class="hidden lg:flex items-center gap-1 text-xs font-medium text-slate-300 mr-2">
                     <a href="#overview" class="px-3 py-1.5 rounded-lg hover:bg-slate-800 text-white font-semibold transition">Workflow</a>
-                    <a href="#demoCases" class="px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300 transition">Test Scenarios</a>
                     <a href="#investigationArea" class="px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300 transition">Verify ID</a>
                     <a href="#auditTrail" class="px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300 transition">Audit Logs</a>
                 </nav>
@@ -368,174 +367,6 @@
                         <p class="text-slate-600 text-xs leading-relaxed">
                             Detects passport photo, captures live traveler selfie feed, and executes 1:1 facial biometric similarity matching to stop look-alike impersonations.
                         </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Demo Cases / Test Scenarios -->
-            <div id="demoCases" class="space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                        <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                            <i data-lucide="play-circle" class="w-4 h-4 text-blue-600"></i>
-                            <span>One-Click Verification Test Scenarios</span>
-                        </h2>
-                        <p class="text-xs text-slate-500">Click any card to immediately run the 4-module forensic screening:</p>
-                    </div>
-                    <div class="flex items-center gap-2 text-xs">
-                        <span class="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-medium">Border Checkpoints</span>
-                        <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-medium">Identity KYC</span>
-                    </div>
-                </div>
-
-                <!-- BORDER CHECKPOINT SCENARIOS -->
-                <div class="space-y-3">
-                    <div class="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
-                        <i data-lucide="plane" class="w-3.5 h-3.5 text-blue-600"></i>
-                        <span>Border Checkpoint & Travel Document Cases:</span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Border Case A: Genuine Passport with MRZ -->
-                        <div onclick="triggerDemoCase('border_case1')" class="cursor-pointer p-5 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200 hover:border-emerald-500 transition-all shadow-sm space-y-3 group">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">Case A: Genuine Passport</span>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">CLEAR FOR ENTRY</span>
-                            </div>
-                            <div class="space-y-1.5 text-xs">
-                                <div class="flex justify-between py-0.5 border-b border-slate-100">
-                                    <span class="text-slate-500">ICAO 9303 MRZ:</span>
-                                    <span class="text-emerald-600 font-semibold">VALID CHECKSUM</span>
-                                </div>
-                                <div class="flex justify-between py-0.5 border-b border-slate-100">
-                                    <span class="text-slate-500">Visa Stamp:</span>
-                                    <span class="text-emerald-600 font-semibold">AUTHENTIC SEAL</span>
-                                </div>
-                                <div class="flex justify-between py-0.5 border-b border-slate-100">
-                                    <span class="text-slate-500">Watchlist DB:</span>
-                                    <span class="text-emerald-600 font-semibold">CLEAR (0 HITS)</span>
-                                </div>
-                                <div class="flex justify-between py-0.5">
-                                    <span class="text-slate-500">Face Biometrics:</span>
-                                    <span class="text-emerald-600 font-semibold">PASS (96.8%)</span>
-                                </div>
-                            </div>
-                            <div class="p-2 rounded-xl bg-emerald-50 text-center text-xs font-medium text-emerald-800 border border-emerald-100">
-                                Risk Score: <strong>6 / 100</strong> (Clear)
-                            </div>
-                        </div>
-
-                        <!-- Border Case B: Tampered Visa Stamp & Modified DOB -->
-                        <div onclick="triggerDemoCase('border_case2')" class="cursor-pointer p-5 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200 hover:border-rose-500 transition-all shadow-sm space-y-3 group">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-900 group-hover:text-rose-700 transition-colors">Case B: Tampered Stamp & DOB</span>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">DETAIN</span>
-                            </div>
-                            <div class="space-y-1.5 text-xs">
-                                <div class="flex justify-between py-0.5 border-b border-slate-100">
-                                    <span class="text-slate-500">Visa Stamp:</span>
-                                    <span class="text-rose-600 font-semibold">TAMPERED SEAL</span>
-                                </div>
-                                <div class="flex justify-between py-0.5 border-b border-slate-100">
-                                    <span class="text-slate-500">Date of Birth:</span>
-                                    <span class="text-rose-600 font-semibold">MODIFIED SPLICING</span>
-                                </div>
-                                <div class="flex justify-between py-0.5 border-b border-slate-100">
-                                    <span class="text-slate-500">MRZ Checksum:</span>
-                                    <span class="text-rose-600 font-semibold">ALERT (MISMATCH)</span>
-                                </div>
-                                <div class="flex justify-between py-0.5">
-                                    <span class="text-slate-500">Border Triage:</span>
-                                    <span class="text-rose-600 font-semibold">DETAIN & ESCALATE</span>
-                                </div>
-                            </div>
-                            <div class="p-2 rounded-xl bg-rose-50 text-center text-xs font-medium text-rose-800 border border-rose-100">
-                                Risk Score: <strong>84 / 100</strong> (Alert)
-                            </div>
-                        </div>
-
-                        <!-- Border Case C: Blacklisted / Stolen Travel Document -->
-                        <div onclick="triggerDemoCase('border_case3')" class="cursor-pointer p-5 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200 hover:border-rose-500 transition-all shadow-sm space-y-3 group">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-900 group-hover:text-rose-700 transition-colors">Case C: Stolen / Interpol Hit</span>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">DETAIN</span>
-                            </div>
-                            <div class="space-y-1.5 text-xs">
-                                <div class="flex justify-between py-0.5 border-b border-slate-100">
-                                    <span class="text-slate-500">Watchlist Status:</span>
-                                    <span class="text-rose-600 font-semibold">INTERPOL SLTD HIT</span>
-                                </div>
-                                <div class="flex justify-between py-0.5 border-b border-slate-100">
-                                    <span class="text-slate-500">Travel Auth:</span>
-                                    <span class="text-rose-600 font-semibold">REVOKED (HOLD)</span>
-                                </div>
-                                <div class="flex justify-between py-0.5 border-b border-slate-100">
-                                    <span class="text-slate-500">Document Serial:</span>
-                                    <span class="text-rose-600 font-mono font-semibold">P-BLOCKED-902</span>
-                                </div>
-                                <div class="flex justify-between py-0.5">
-                                    <span class="text-slate-500">Border Triage:</span>
-                                    <span class="text-rose-600 font-semibold">IMMEDIATE DETENTION</span>
-                                </div>
-                            </div>
-                            <div class="p-2 rounded-xl bg-rose-50 text-center text-xs font-medium text-rose-800 border border-rose-100">
-                                Risk Score: <strong>96 / 100</strong> (Critical)
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- KYC CASES -->
-                    <div class="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5 pt-3">
-                        <i data-lucide="shield" class="w-3.5 h-3.5 text-slate-500"></i>
-                        <span>Identity KYC & Commercial Scenarios:</span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Case 1 -->
-                        <div onclick="triggerDemoCase('case1')" class="cursor-pointer p-4 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200 hover:border-emerald-500 transition-all shadow-sm space-y-2.5 group">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition">Case 1: Genuine Identity</span>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">LOW RISK</span>
-                            </div>
-                            <div class="space-y-1 text-xs text-slate-500">
-                                <div class="flex justify-between"><span>OCR Extraction:</span> <span class="text-emerald-600 font-medium">PASS</span></div>
-                                <div class="flex justify-between"><span>Face Match:</span> <span class="text-emerald-600 font-medium">96.8%</span></div>
-                                <div class="flex justify-between"><span>Forensics:</span> <span class="text-emerald-600 font-medium">PASS</span></div>
-                            </div>
-                            <div class="p-1.5 rounded-lg bg-emerald-50 text-center text-xs font-medium text-emerald-800">
-                                Risk Score: 6/100
-                            </div>
-                        </div>
-
-                        <!-- Case 2 -->
-                        <div onclick="triggerDemoCase('case2')" class="cursor-pointer p-4 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200 hover:border-rose-500 transition-all shadow-sm space-y-2.5 group">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-900 group-hover:text-rose-700 transition">Case 2: Tampered Document</span>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">HIGH RISK</span>
-                            </div>
-                            <div class="space-y-1 text-xs text-slate-500">
-                                <div class="flex justify-between"><span>Attack:</span> <span class="text-rose-600 font-medium">Document Tampering</span></div>
-                                <div class="flex justify-between"><span>Forensics:</span> <span class="text-rose-600 font-medium">FAILED (Spliced)</span></div>
-                                <div class="flex justify-between"><span>Checksum:</span> <span class="text-rose-600 font-medium">INVALID</span></div>
-                            </div>
-                            <div class="p-1.5 rounded-lg bg-rose-50 text-center text-xs font-medium text-rose-800">
-                                Risk Score: 84/100
-                            </div>
-                        </div>
-
-                        <!-- Case 3 -->
-                        <div onclick="triggerDemoCase('case3')" class="cursor-pointer p-4 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200 hover:border-rose-500 transition-all shadow-sm space-y-2.5 group">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-900 group-hover:text-rose-700 transition">Case 3: Identity Mismatch</span>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">HIGH RISK</span>
-                            </div>
-                            <div class="space-y-1 text-xs text-slate-500">
-                                <div class="flex justify-between"><span>Similarity:</span> <span class="text-rose-600 font-medium">38.4% (Mismatch)</span></div>
-                                <div class="flex justify-between"><span>Attack:</span> <span class="text-rose-600 font-medium">Look-alike Impostor</span></div>
-                                <div class="flex justify-between"><span>Action:</span> <span class="text-rose-600 font-medium">Reject / Detain</span></div>
-                            </div>
-                            <div class="p-1.5 rounded-lg bg-rose-50 text-center text-xs font-medium text-rose-800">
-                                Risk Score: 92/100
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -994,7 +825,7 @@
                 <div id="docsTableContainer">
                     <div id="noDocsMsg" class="py-10 text-center text-slate-500 text-xs">
                         <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 text-slate-400"></i>
-                        <span>No records logged yet. Run a verification or click a Test Scenario above.</span>
+                        <span>No records logged yet. Upload an identity document to run an investigation.</span>
                     </div>
                     <div id="docsListGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
